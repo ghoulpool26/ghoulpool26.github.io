@@ -72,11 +72,12 @@ async function sendNtfyAlert(death) {
 async function checkBatchWithRetry(batch, maxRetries = 5) {
   const prompt = `For each person in this list who has DIED, search the web to verify their death using a reputable news source.
 
-RULES:
-- Only return names from this exact list
-- Only confirmed deaths
-- Return ONLY a JSON array, no markdown
-- If none have died return []
+CRITICAL RULES:
+- Only return names from my list below, copied exactly as written
+- Do NOT add any names not on my list
+- Only include confirmed deaths — you must visit a reputable news source (BBC, CNN, Reuters, AP, NPR, NYT, Washington Post, etc.) to verify
+- Return ONLY a JSON array, no markdown, no explanation
+- If none have died, return: []
 
 Format: [{"name":"Exact Name","year":2026,"date":"YYYY-MM-DD","source_name":"Outlet","source_url":"https://..."}]
 
