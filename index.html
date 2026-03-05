@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghoul Pool Bingo 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, serif; background: #1a0a0a; color: #e8d5b7; min-height: 100vh; padding: 16px; }
+  h1 { text-align: center; font-size: 1.6em; color: #c0392b; letter-spacing: 3px; margin-bottom: 4px; text-shadow: 0 0 10px #8b0000; }
+  .sub { text-align: center; color: #888; font-size: 0.8em; margin-bottom: 16px; }
+  .tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab { padding: 8px 18px; border-radius: 6px; border: 1px solid #555; background: #2a1a1a; color: #e8d5b7; font-size: 0.95em; cursor: pointer; font-family: Georgia, serif; }
+  .tab.active { background: #8b0000; border-color: #c0392b; color: #fff; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .status { text-align: center; color: #aaa; font-size: 0.8em; margin-bottom: 12px; min-height: 1.4em; }
+  .status a { color: #c0392b; cursor: pointer; }
+  .status.error { color: #e74c3c; }
+  .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #555; border-top-color: #c0392b; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 6px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .lb { max-width: 520px; margin: 0 auto; }
+  .lb-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; background: #2a1010; border-radius: 8px; margin-bottom: 6px; border: 1px solid #5a2020; }
+  .lb-row.first { background: #5a0000; border-color: #ffd700; }
+  .lb-row.second { background: #3a1010; }
+  .medal { font-size: 1.4em; padding-top: 2px; min-width: 28px; }
+  .lb-name { font-weight: bold; font-size: 1em; margin-bottom: 3px; }
+  .lb-count { font-size: 0.8em; color: #aaa; margin-bottom: 4px; }
+  .pill { display: inline-block; background: #8b0000; border-radius: 12px; padding: 2px 8px; font-size: 0.7em; margin: 2px 3px; color: #fff; }
+  .no-deaths { font-size: 0.72em; color: #666; font-style: italic; }
+  .big-bingo { text-align: center; font-size: 1.6em; color: #ffd700; font-weight: bold; letter-spacing: 4px; text-shadow: 0 0 15px #ffd700; margin-bottom: 16px; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .player-select { display: block; margin: 0 auto 20px; padding: 8px 16px; border-radius: 6px; border: 1px solid #555; background: #2a1a1a; color: #e8d5b7; font-size: 0.95em; font-family: Georgia, serif; }
+  .bingo-card { max-width: 520px; margin: 0 auto; background: #2a1010; border: 3px solid #8b0000; border-radius: 12px; padding: 16px; box-shadow: 0 0 20px #8b000044; }
+  .bingo-label { text-align: center; font-weight: bold; font-size: 1.1em; margin-bottom: 10px; }
+  .bingo-hdr { display: grid; grid-template-columns: repeat(5,1fr); gap: 4px; margin-bottom: 4px; }
+  .bingo-hdr div { background: #8b0000; color: #fff; text-align: center; font-weight: bold; font-size: 1.2em; padding: 6px 0; border-radius: 4px; }
+  .bingo-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 4px; }
+  .cell { background: #1a0808; border: 1px solid #5a2020; border-radius: 5px; min-height: 64px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.58em; padding: 4px; cursor: pointer; line-height: 1.3; position: relative; }
+  .cell.dead { background: #8b0000; color: #fff; border-color: #c0392b; }
+  .cell.dead::after { content: '💀'; position: absolute; top: 2px; right: 2px; font-size: 1.2em; opacity: 0.6; }
+  .cell.manual { background: #4a0000; color: #e8d5b7; border-color: #8b0000; }
+  .card-bingo { text-align: center; font-size: 1.4em; color: #ffd700; font-weight: bold; margin-top: 10px; letter-spacing: 3px; text-shadow: 0 0 10px #ffd700; }
+  .search-wrap { max-width: 520px; margin: 0 auto; }
+  .search-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .search-input { flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #555; background: #2a1a1a; color: #e8d5b7; font-size: 0.95em; font-family: Georgia, serif; }
+  .search-btn { padding: 8px 14px; background: #8b0000; color: #fff; border: 1px solid #c0392b; border-radius: 6px; font-size: 0.95em; cursor: pointer; }
+  .search-box { background: #1a0808; border: 1px solid #5a2020; border-radius: 8px; padding: 12px 16px; }
+  .sr-title { color: #c0392b; font-weight: bold; margin-bottom: 6px; font-size: 0.9em; }
+  .sr-hit { padding: 3px 0; font-size: 0.9em; }
+  .sr-dead { color: #e74c3c; font-size: 0.8em; }
+  .sr-none { color: #888; font-style: italic; font-size: 0.9em; }
+  .debug-box { max-width: 520px; margin: 12px auto 0; background: #1a0808; border: 1px solid #333; border-radius: 6px; padding: 10px 14px; font-size: 0.72em; color: #666; word-break: break-all; display: none; }
+</style>
+</head>
+<body>
+<h1>☠️ GHOUL POOL BINGO ☠️</h1>
+<p class="sub">2026 Edition</p>
+<div class="tabs">
+  <button class="tab active" onclick="showPage('leaderboard')">🏆 Leaderboard</button>
+  <button class="tab" onclick="showPage('card')">🎮 Play</button>
+  <button class="tab" onclick="showPage('search')">🔍 Search</button>
+  <button class="tab" onclick="showPage('allcards')">🖨️ All Cards</button>
+</div>
+<p class="status" id="statusMsg"><span class="spinner"></span> Loading death data...</p>
+
+<div id="leaderboard" class="page active"><div class="lb" id="lbContent"><p style="text-align:center;color:#666;font-size:0.9em">Fetching data...</p></div></div>
+<div id="card" class="page">
+  <select class="player-select" id="playerSelect" onchange="renderCard()">
+    <option value="">-- Select Player --</option>
+    <option value="Katie">Katie</option><option value="Nan">Nan</option>
+    <option value="Tasia">Tasia</option><option value="Kyle">Kyle</option>
+    <option value="Sherry">Sherry</option><option value="Keri">Keri</option>
+    <option value="ChrisChelsea">Chris & Chelsea</option>
+    <option value="TomBenConnor">Tom/Ben/Connor</option>
+  </select>
+  <div id="cardArea"></div>
+</div>
+<div id="search" class="page">
+  <div class="search-wrap">
+    <div class="search-row">
+      <input class="search-input" id="searchInput" placeholder="Search a name..." onkeydown="if(event.key==='Enter')doSearch()"/>
+      <button class="search-btn" onclick="doSearch()">Search</button>
+    </div>
+    <div id="searchResults"></div>
+  </div>
+</div>
+<div id="allcards" class="page">
+  <div id="allCardsArea"></div>
+</div>
+<div class="debug-box" id="debugBox"></div>
+
+<script>
+const allPools = {
+  Katie: ["Robert Redford","Chuck Grassley","Lou Holtz","Deion Sanders","Ariana Grande","Paul Pelosi","Bryan Johnson","Mel Brooks","Ric Flair","Clint Eastwood","Virginia Foxx","Robert Plant","Willie Nelson","Rudy Giuliani","Kanye West","Mitch McConnell","Joe Namath","Antonio Brown","Donald Trump","Phil Knight","Dick Van Dyke","Clarence Thomas","Bernie Kosar","Julie Andrews","Dolly Parton"],
+  Nan: ["Harvey Weinstein","King Charles","Ric Flair","Katy Perry","Guy Fieri","Phil Mickelson","Bill Belichick","Donald Trump","Andrew Windsor","Danny DeVito","John Kerry","Jax Taylor","Dolly Parton","Jim Carrey","George W Bush","George Strait","Nancy Pelosi","Steve Spurrier","Corey Feldman","Bill Clinton","Flavor Flav","Bruce Willis","RFK","Julie Andrews","Stephen Fry"],
+  Tasia: ["Sandy Koufax","Bill Clinton","Liver King","Ian Michelin","Harrison Ford","Buzz Aldrin","Bill Belichick","Anthony Hopkins","Nancy Pelosi","Clint Eastwood","John Daly","Joe Biden","Salman Rushdie","Donald Trump","Alex Murdoch","David Attenborough","Phil Knight","Netanyahu","Kevin Spacey","Yoko Ono","Dolly Parton","Michael Caine","Willie Nelson","Patrick Stewart","Dick Van Dyke"],
+  Kyle: ["Caitlyn Jenner","Amanda Bynes","Jerry Sandusky","Bill Cosby","Dennis Rodman","Bam Margera","Elton John","Michael J Fox","David Attenborough","Kanye West","Ghislaine Maxwell","Wendi Adelson","P Diddy","Britney Spears","Charlie Sheen","Harvey Weinstein","Macaulay Culkin","Demi Lovato","Casey Anthony","Bruce Willis","Clint Eastwood","Mr. Feeny (Daniels)","Mel Brooks","Joe Biden","Donald Trump"],
+  Sherry: ["King Salman","Vladimir Putin","Bob Iger","Warren Buffett","Dan Rather","Raul Castro","Dick Greco","Mitch McConnell","Joe Namath","Andrea Mitchell","Dick Van Dyke","Alan Greenspan","Harvey Weinstein","William Shatner","King Charles","Donald Trump","Yoko Ono","Bill Clinton","Richard Shelby","Willie Nelson","Joe Biden","Clint Eastwood","Mel Brooks","Nancy Pelosi","Dan Rather"],
+  Keri: ["Wendy Williams","Naomi Campbell","Pete Doherty","Elon Musk","Carol Burnett","King Charles III","Eric Clapton","Yoko Ono","Will Smith","Britney Spears","Woody Allen","Steven Tyler","Joe Biden","Julie Andrews","Ghislaine Maxwell","Keith Richards","John Mulaney","Willie Nelson","Queen Camilla","Dick Van Dyke","David Attenborough","Bruce Willis","Iggy Pop","Clint Eastwood","William Shatner"],
+  ChrisChelsea: ["Pat Ryan","Burt Kreischer","John Frusciante","Jerry Jones","Yoko Ono","Jelly Roll","Morgan Freeman","MGK","Bruce Willis","John Mulaney","Dick Van Dyke","Miley Cyrus","Demi Lovato","Willie Nelson","Clint Eastwood","David Attenborough","Johnny Manziel","Michael Caine","Mr. Feeny (Daniels)","Mel Brooks","John Daly","William Shatner","Joe Biden","Britney Spears","Antonio Brown"],
+  TomBenConnor: ["Jack Nicklaus","Ayatollah Khamenei","Rudy Giuliani","George Strait","Lee Corso","Ric Flair","Arthur Blank","Paul McCartney","Dick Vitale","Terry Bradshaw","P Diddy","Joe Biden","Mitch McConnell","Ellen DeGeneres","Keith Richards","Britney Spears","John Thune","Bill Cosby","Joe Pesci","Mack Brown","King Charles","Michael Caine","Jerry Jones","Vladimir Putin","William Shatner"]
+};
+
+const playerLabels = { Katie:"Katie",Nan:"Nan",Tasia:"Tasia",Kyle:"Kyle",Sherry:"Sherry",Keri:"Keri",ChrisChelsea:"Chris & Chelsea",TomBenConnor:"Tom/Ben/Connor" };
+const allNames = [...new Set(Object.values(allPools).flat())];
+const CACHE_KEY = "ghoulpool-deaths-2026-v2";
+const CACHE_TTL = 1000 * 60 * 60 * 6;
+
+let deaths = [];
+let deadSet = new Set();
+let manualMarks = {};
+
+function setStatus(msg, isError) {
+  const el = document.getElementById('statusMsg');
+  el.innerHTML = msg;
+  el.className = 'status' + (isError ? ' error' : '');
+}
+
+function debug(msg) {
+  const el = document.getElementById('debugBox');
+  el.style.display = 'block';
+  el.innerHTML += msg + '<br>';
+}
+
+function checkBingo(player) {
+  const names = allPools[player];
+  const m = i => deadSet.has(names[i].toLowerCase()) || !!manualMarks[player+':'+i];
+  for (let r = 0; r < 5; r++) if ([0,1,2,3,4].every(c => m(r*5+c))) return true;
+  for (let c = 0; c < 5; c++) if ([0,1,2,3,4].every(r => m(r*5+c))) return true;
+  if ([0,6,12,18,24].every(m)) return true;
+  if ([4,8,12,16,20].every(m)) return true;
+  return false;
+}
+
+async function loadDeaths(force) {
+  setStatus('<span class="spinner"></span> Searching for deaths...');
+  if (!force) {
+    try {
+      const cached = await window.storage.get(CACHE_KEY);
+      if (cached) {
+        const { d, ts } = JSON.parse(cached.value);
+        if (Date.now() - ts < CACHE_TTL) {
+          deaths = d;
+          deadSet = new Set(d.map(x => x.name.toLowerCase()));
+          setStatus(`Last updated: ${new Date(ts).toLocaleString()} · <a onclick="loadDeaths(true)">Refresh ↺</a>`);
+          renderLeaderboard(); renderCard(); return;
+        }
+      }
+    } catch(e) { debug('Cache read error: ' + e); }
+  }
+
+  const nameList = allNames.join(", ");
+  const prompt = `Search the web and identify which of these people have died. Only confirmed deaths. Today is March 2026. Return ONLY a valid JSON array, no markdown, no explanation. Format: [{"name":"Exact Name As Given","year":2025}]. If none have died return [].
+
+Names to check: ${nameList}`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        tools: [{ type: "web_search_20250305", name: "web_search" }],
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      setStatus('API error: ' + res.status + '. <a onclick="loadDeaths(true)">Retry</a>', true);
+      debug('API error body: ' + err);
+      return;
+    }
+
+    const data = await res.json();
+    const textBlocks = (data.content || []).filter(b => b.type === "text").map(b => b.text);
+    const fullText = textBlocks.join("").replace(/```json|```/g, "").trim();
+
+    try {
+      const parsed = JSON.parse(fullText);
+      deaths = Array.isArray(parsed) ? parsed : [];
+    } catch(e) {
+      // Try extracting JSON array from text
+      const match = fullText.match(/\[[\s\S]*\]/);
+      if (match) {
+        try { deaths = JSON.parse(match[0]); } catch(e2) { deaths = []; }
+      } else {
+        deaths = [];
+        debug('Could not parse response: ' + fullText.slice(0,300));
+      }
+    }
+
+    deadSet = new Set(deaths.map(x => x.name.toLowerCase()));
+    const ts = Date.now();
+    try { await window.storage.set(CACHE_KEY, JSON.stringify({ d: deaths, ts })); } catch(e) {}
+    setStatus(`Last updated: ${new Date(ts).toLocaleString()} · <a onclick="loadDeaths(true)">Refresh ↺</a>`);
+    renderLeaderboard(); renderCard();
+
+  } catch(e) {
+    setStatus('Network error. <a onclick="loadDeaths(true)">Retry</a>', true);
+    debug('Fetch error: ' + e);
+  }
+}
+
+function renderLeaderboard() {
+  const medals = ["🥇","🥈","🥉"];
+  const rows = Object.keys(allPools).map(k => {
+    const dead = allPools[k].filter(n => deadSet.has(n.toLowerCase()));
+    return { k, dead, bingo: checkBingo(k) };
+  }).sort((a,b) => b.dead.length - a.dead.length);
+
+  const anyBingo = rows.some(r => r.bingo);
+  let html = anyBingo ? '<div class="big-bingo">🎉 BINGO! 💀</div>' : '';
+
+  // Assign ranks accounting for ties
+  let rank = 1;
+  rows.forEach((row, i) => {
+    if (i > 0 && row.dead.length < rows[i-1].dead.length) rank = i + 1;
+    row.rank = rank;
+  });
+
+  rows.forEach((row, i) => {
+    const isTied = rows.filter(r => r.rank === row.rank).length > 1;
+    const rankLabel = isTied ? `T${row.rank}` : String(row.rank);
+    const medalOrRank = medals[row.rank-1] ? (isTied ? `T${medals[row.rank-1]}` : medals[row.rank-1]) : `#${rankLabel}`;
+    const rowClass = row.rank===1 ? 'first' : row.rank===2 ? 'second' : '';
+    const pills = row.dead.length
+      ? row.dead.map(n => {
+          const entry = deaths.find(d => d.name.toLowerCase() === n.toLowerCase());
+          return `<span class="pill">💀 ${n}${entry?.year ? ' ('+entry.year+')' : ''}</span>`;
+        }).join('')
+      : '<span class="no-deaths">No deaths yet</span>';
+    html += `<div class="lb-row ${rowClass}">
+      <div class="medal">${medalOrRank}</div>
+      <div style="flex:1">
+        <div class="lb-name">${playerLabels[row.k]}${row.bingo ? ' 🎉 BINGO!' : ''}</div>
+        <div class="lb-count">${row.dead.length} death${row.dead.length!==1?'s':''}</div>
+        <div>${pills}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('lbContent').innerHTML = html;
+}
+
+function renderCard() {
+  const p = document.getElementById('playerSelect').value;
+  if (!p) { document.getElementById('cardArea').innerHTML = ''; return; }
+  const names = allPools[p];
+  const cells = names.map((name, i) => {
+    const isDead = deadSet.has(name.toLowerCase());
+    const isManual = manualMarks[p+':'+i];
+    const cls = 'cell' + (isDead ? ' dead' : isManual ? ' manual' : '');
+    const click = !isDead ? `onclick="toggleManual('${p}',${i})"` : '';
+    return `<div class="${cls}" ${click}>${name}</div>`;
+  }).join('');
+  const bingo = checkBingo(p);
+  document.getElementById('cardArea').innerHTML = `
+    <div class="bingo-card">
+      <div class="bingo-label">☠️ ${playerLabels[p]}'s Card ☠️</div>
+      <div class="bingo-hdr"><div>B</div><div>I</div><div>N</div><div>G</div><div>O</div></div>
+      <div class="bingo-grid">${cells}</div>
+      ${bingo ? '<div class="card-bingo">🎉 BINGO! 💀</div>' : ''}
+    </div>`;
+}
+
+function toggleManual(player, i) {
+  const k = player+':'+i;
+  manualMarks[k] = !manualMarks[k];
+  renderCard(); renderLeaderboard();
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab')[['leaderboard','card','search','allcards'].indexOf(id)].classList.add('active');
+  if (id === 'allcards') renderAllCards();
+}
+
+function renderAllCards() {
+  const area = document.getElementById('allCardsArea');
+  area.innerHTML = Object.keys(allPools).map(p => {
+    const names = allPools[p];
+    const cells = names.map((name, i) => {
+      const isDead = deadSet.has(name.toLowerCase());
+      const isManual = manualMarks[p+':'+i];
+      const cls = 'cell' + (isDead ? ' dead' : isManual ? ' manual' : '');
+      return `<div class="${cls}">${name}</div>`;
+    }).join('');
+    const bingo = checkBingo(p);
+    return `<div class="bingo-card" style="margin-bottom:32px">
+      <div class="bingo-label">☠️ ${playerLabels[p]}'s Card ☠️</div>
+      <div class="bingo-hdr"><div>B</div><div>I</div><div>N</div><div>G</div><div>O</div></div>
+      <div class="bingo-grid">${cells}</div>
+      ${bingo ? '<div class="card-bingo">🎉 BINGO! 💀</div>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const el = document.getElementById('searchResults');
+  if (!q) { el.innerHTML = ''; return; }
+  const hits = [];
+  for (const [k, list] of Object.entries(allPools)) {
+    const match = list.find(n => n.toLowerCase().includes(q));
+    if (match) hits.push({ label: playerLabels[k], match, dead: deadSet.has(match.toLowerCase()) });
+  }
+  el.innerHTML = hits.length === 0
+    ? '<div class="search-box"><span class="sr-none">Nobody has that name on their list.</span></div>'
+    : `<div class="search-box"><div class="sr-title">Results:</div>${hits.map(h=>`<div class="sr-hit">${h.dead?'💀':'👤'} <b>${h.label}</b> — ${h.match} ${h.dead?'<span class="sr-dead">(deceased)</span>':''}</div>`).join('')}</div>`;
+}
+
+loadDeaths(false);
+</script>
+</body>
+</html>
