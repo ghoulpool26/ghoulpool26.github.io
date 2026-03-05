@@ -25,60 +25,76 @@ function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
-async function checkBatch(batch) {
-  const prompt = `I am going to give you a list of names. For each person who has died, search the web to find and verify their death.
+async function checkBatchWithRetry(batch, maxRetries = 5) {
+  const prompt = `For each person in this list who has DIED, search the web to verify their death using a reputable news source.
 
-CRITICAL RULES:
-- Only return names from my list below, copied exactly as written
-- Do NOT add any names not on my list
-- Only include confirmed deaths — you must visit a reputable news source (BBC, CNN, Reuters, AP, NPR, NYT, Washington Post, etc.) to verify
-- Return ONLY a JSON array, no markdown, no explanation
-- If none have died, return: []
+RULES:
+- Only return names from this exact list
+- Only confirmed deaths
+- Return ONLY a JSON array, no markdown
+- If none have died return []
 
-For each confirmed death return this exact format:
-{"name":"Exact Name From List","year":2026,"date":"YYYY-MM-DD","source_name":"Outlet Name","source_url":"https://..."}
+Format: [{"name":"Exact Name","year":2026,"date":"YYYY-MM-DD","source_name":"Outlet","source_url":"https://..."}]
 
 List:
 ${batch.join('\n')}`;
 
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': process.env.ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-      messages: [{ role: 'user', content: prompt }]
-    })
-  });
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1000,
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`API error ${res.status}: ${err}`);
-  }
+      if (res.status === 429) {
+        const waitMs = Math.pow(2, attempt + 1) * 30000; // 60s, 120s, 240s...
+        console.log(`  Rate limited. Waiting ${waitMs/1000}s before retry ${attempt + 1}/${maxRetries}...`);
+        await sleep(waitMs);
+        continue;
+      }
 
-  const data = await res.json();
-  const text = (data.content || [])
-    .filter(b => b.type === 'text')
-    .map(b => b.text)
-    .join('');
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`API error ${res.status}: ${err}`);
+      }
 
-  let deaths = [];
-  try {
-    const clean = text.replace(/```json|```/g, '').trim();
-    deaths = JSON.parse(clean);
-  } catch (e) {
-    const match = text.match(/\[[\s\S]*\]/);
-    if (match) {
-      try { deaths = JSON.parse(match[0]); } catch(e2) { deaths = []; }
+      const data = await res.json();
+      const text = (data.content || [])
+        .filter(b => b.type === 'text')
+        .map(b => b.text)
+        .join('');
+
+      let deaths = [];
+      try {
+        const clean = text.replace(/```json|```/g, '').trim();
+        deaths = JSON.parse(clean);
+      } catch (e) {
+        const match = text.match(/\[[\s\S]*\]/);
+        if (match) {
+          try { deaths = JSON.parse(match[0]); } catch(e2) { deaths = []; }
+        }
+      }
+
+      return deaths;
+
+    } catch(e) {
+      if (attempt === maxRetries - 1) throw e;
+      const waitMs = Math.pow(2, attempt + 1) * 15000;
+      console.log(`  Error: ${e.message}. Retrying in ${waitMs/1000}s...`);
+      await sleep(waitMs);
     }
   }
-
-  return deaths;
+  return [];
 }
 
 async function fetchDeaths() {
@@ -87,16 +103,16 @@ async function fetchDeaths() {
   let allDeaths = [];
 
   for (let i = 0; i < batches.length; i++) {
-    console.log(`Checking batch ${i + 1}/${batches.length}: ${batches[i].join(', ')}`);
-    const results = await checkBatch(batches[i]);
-    // Safety filter
+    console.log(`\nBatch ${i + 1}/${batches.length}: ${batches[i].join(', ')}`);
+    const results = await checkBatchWithRetry(batches[i]);
     const filtered = results.filter(d => nameSetLower.has(d.name.toLowerCase()));
-    console.log(`  → ${filtered.length} deaths found in this batch`);
+    console.log(`  → ${filtered.length} deaths found`);
+    filtered.forEach(d => console.log(`     💀 ${d.name} (${d.date}) — ${d.source_name}`));
     allDeaths = allDeaths.concat(filtered);
-    // Wait 65s between batches to ensure the rate limit window resets
+
     if (i < batches.length - 1) {
-      console.log('  Waiting 65s before next batch...');
-      await sleep(65000);
+      console.log('  Waiting 62s...');
+      await sleep(62000);
     }
   }
 
@@ -106,8 +122,7 @@ async function fetchDeaths() {
 fetchDeaths()
   .then(result => {
     fs.writeFileSync('deaths.json', JSON.stringify(result, null, 2));
-    console.log(`\nDone. Found ${result.deaths.length} total deaths.`);
-    result.deaths.forEach(d => console.log(` - ${d.name} (${d.date}) — ${d.source_name}: ${d.source_url}`));
+    console.log(`\n✅ Done. ${result.deaths.length} total deaths written to deaths.json`);
   })
   .catch(err => {
     console.error('Failed:', err.message);
