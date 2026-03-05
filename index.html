@@ -19,28 +19,60 @@
   .status.error { color: #e74c3c; }
   .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #555; border-top-color: #c0392b; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 6px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* LEADERBOARD */
   .lb { max-width: 520px; margin: 0 auto; }
   .lb-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; background: #2a1010; border-radius: 8px; margin-bottom: 6px; border: 1px solid #5a2020; }
   .lb-row.first { background: #5a0000; border-color: #ffd700; }
   .lb-row.second { background: #3a1010; }
-  .medal { font-size: 1.4em; padding-top: 2px; min-width: 28px; }
+  .medal { font-size: 1.2em; padding-top: 2px; min-width: 32px; text-align: center; }
   .lb-name { font-weight: bold; font-size: 1em; margin-bottom: 3px; }
   .lb-count { font-size: 0.8em; color: #aaa; margin-bottom: 4px; }
   .pill { display: inline-block; background: #8b0000; border-radius: 12px; padding: 2px 8px; font-size: 0.7em; margin: 2px 3px; color: #fff; }
   .no-deaths { font-size: 0.72em; color: #666; font-style: italic; }
   .big-bingo { text-align: center; font-size: 1.6em; color: #ffd700; font-weight: bold; letter-spacing: 4px; text-shadow: 0 0 15px #ffd700; margin-bottom: 16px; animation: pulse 1s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+  /* MARK DEATHS */
+  .mark-wrap { max-width: 520px; margin: 0 auto; }
+  .mark-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .mark-input { flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #555; background: #2a1a1a; color: #e8d5b7; font-size: 0.95em; font-family: Georgia, serif; }
+  .mark-input::placeholder { color: #666; }
+  .mark-btn { padding: 8px 14px; background: #8b0000; color: #fff; border: 1px solid #c0392b; border-radius: 6px; font-size: 0.95em; cursor: pointer; font-family: Georgia, serif; white-space: nowrap; }
+  .mark-btn:hover { background: #c0392b; }
+  .mark-btn.secondary { background: #2a1a1a; border-color: #555; }
+  .mark-btn.secondary:hover { background: #3a2a2a; }
+  .match-list { background: #1a0808; border: 1px solid #5a2020; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; }
+  .match-title { color: #c0392b; font-weight: bold; margin-bottom: 8px; font-size: 0.9em; }
+  .match-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #2a1010; font-size: 0.88em; }
+  .match-item:last-child { border-bottom: none; }
+  .match-name { flex: 1; }
+  .match-players { font-size: 0.78em; color: #888; margin-top: 2px; }
+  .match-actions { display: flex; gap: 6px; }
+  .dead-list { background: #1a0808; border: 1px solid #5a2020; border-radius: 8px; padding: 12px 16px; }
+  .dead-title { color: #c0392b; font-weight: bold; margin-bottom: 8px; font-size: 0.9em; }
+  .dead-item { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #2a1010; font-size: 0.88em; }
+  .dead-item:last-child { border-bottom: none; }
+  .dead-name { flex: 1; }
+  .dead-year { color: #888; font-size: 0.85em; margin: 0 10px; }
+  .undo-btn { background: none; border: 1px solid #555; border-radius: 4px; color: #aaa; font-size: 0.78em; cursor: pointer; padding: 2px 8px; font-family: Georgia, serif; }
+  .undo-btn:hover { border-color: #c0392b; color: #e8d5b7; }
+  .no-dead { color: #666; font-style: italic; font-size: 0.85em; }
+  .year-input { width: 70px; padding: 4px 8px; border-radius: 4px; border: 1px solid #555; background: #2a1a1a; color: #e8d5b7; font-size: 0.85em; font-family: Georgia, serif; }
+
+  /* CARD */
   .player-select { display: block; margin: 0 auto 20px; padding: 8px 16px; border-radius: 6px; border: 1px solid #555; background: #2a1a1a; color: #e8d5b7; font-size: 0.95em; font-family: Georgia, serif; }
   .bingo-card { max-width: 520px; margin: 0 auto; background: #2a1010; border: 3px solid #8b0000; border-radius: 12px; padding: 16px; box-shadow: 0 0 20px #8b000044; }
   .bingo-label { text-align: center; font-weight: bold; font-size: 1.1em; margin-bottom: 10px; }
   .bingo-hdr { display: grid; grid-template-columns: repeat(5,1fr); gap: 4px; margin-bottom: 4px; }
   .bingo-hdr div { background: #8b0000; color: #fff; text-align: center; font-weight: bold; font-size: 1.2em; padding: 6px 0; border-radius: 4px; }
   .bingo-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 4px; }
-  .cell { background: #1a0808; border: 1px solid #5a2020; border-radius: 5px; min-height: 64px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.58em; padding: 4px; cursor: pointer; line-height: 1.3; position: relative; }
+  .cell { background: #1a0808; border: 1px solid #5a2020; border-radius: 5px; min-height: 64px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.58em; padding: 4px; line-height: 1.3; position: relative; }
   .cell.dead { background: #8b0000; color: #fff; border-color: #c0392b; }
   .cell.dead::after { content: '💀'; position: absolute; top: 2px; right: 2px; font-size: 1.2em; opacity: 0.6; }
-  .cell.manual { background: #4a0000; color: #e8d5b7; border-color: #8b0000; }
   .card-bingo { text-align: center; font-size: 1.4em; color: #ffd700; font-weight: bold; margin-top: 10px; letter-spacing: 3px; text-shadow: 0 0 10px #ffd700; }
+
+  /* SEARCH */
   .search-wrap { max-width: 520px; margin: 0 auto; }
   .search-row { display: flex; gap: 8px; margin-bottom: 16px; }
   .search-input { flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #555; background: #2a1a1a; color: #e8d5b7; font-size: 0.95em; font-family: Georgia, serif; }
@@ -50,7 +82,6 @@
   .sr-hit { padding: 3px 0; font-size: 0.9em; }
   .sr-dead { color: #e74c3c; font-size: 0.8em; }
   .sr-none { color: #888; font-style: italic; font-size: 0.9em; }
-  .debug-box { max-width: 520px; margin: 12px auto 0; background: #1a0808; border: 1px solid #333; border-radius: 6px; padding: 10px 14px; font-size: 0.72em; color: #666; word-break: break-all; display: none; }
 </style>
 </head>
 <body>
@@ -58,13 +89,29 @@
 <p class="sub">2026 Edition</p>
 <div class="tabs">
   <button class="tab active" onclick="showPage('leaderboard')">🏆 Leaderboard</button>
+  <button class="tab" onclick="showPage('markdeaths')">💀 Mark Deaths</button>
   <button class="tab" onclick="showPage('card')">🎮 Play</button>
   <button class="tab" onclick="showPage('search')">🔍 Search</button>
-  <button class="tab" onclick="showPage('allcards')">🖨️ All Cards</button>
+  <button class="tab" onclick="showPage('allcards')">🃏 All Cards</button>
 </div>
-<p class="status" id="statusMsg"><span class="spinner"></span> Loading death data...</p>
+<p class="status" id="statusMsg"></p>
 
-<div id="leaderboard" class="page active"><div class="lb" id="lbContent"><p style="text-align:center;color:#666;font-size:0.9em">Fetching data...</p></div></div>
+<div id="leaderboard" class="page active"><div class="lb" id="lbContent"></div></div>
+
+<div id="markdeaths" class="page">
+  <div class="mark-wrap">
+    <div class="mark-row">
+      <input class="mark-input" id="markInput" placeholder="Type a name to mark as deceased..." onkeydown="if(event.key==='Enter')searchForMark()"/>
+      <button class="mark-btn" onclick="searchForMark()">Search</button>
+    </div>
+    <div id="matchResults"></div>
+    <div class="dead-list">
+      <div class="dead-title">☠️ Confirmed Deaths</div>
+      <div id="deadList"><span class="no-dead">No deaths marked yet.</span></div>
+    </div>
+  </div>
+</div>
+
 <div id="card" class="page">
   <select class="player-select" id="playerSelect" onchange="renderCard()">
     <option value="">-- Select Player --</option>
@@ -76,19 +123,20 @@
   </select>
   <div id="cardArea"></div>
 </div>
+
 <div id="search" class="page">
   <div class="search-wrap">
     <div class="search-row">
-      <input class="search-input" id="searchInput" placeholder="Search a name..." onkeydown="if(event.key==='Enter')doSearch()"/>
+      <input class="search-input" id="searchInput" placeholder="Search a name across all lists..." onkeydown="if(event.key==='Enter')doSearch()"/>
       <button class="search-btn" onclick="doSearch()">Search</button>
     </div>
     <div id="searchResults"></div>
   </div>
 </div>
+
 <div id="allcards" class="page">
   <div id="allCardsArea"></div>
 </div>
-<div class="debug-box" id="debugBox"></div>
 
 <script>
 const allPools = {
@@ -104,104 +152,37 @@ const allPools = {
 
 const playerLabels = { Katie:"Katie",Nan:"Nan",Tasia:"Tasia",Kyle:"Kyle",Sherry:"Sherry",Keri:"Keri",ChrisChelsea:"Chris & Chelsea",TomBenConnor:"Tom/Ben/Connor" };
 const allNames = [...new Set(Object.values(allPools).flat())];
-const CACHE_KEY = "ghoulpool-deaths-2026-v2";
-const CACHE_TTL = 1000 * 60 * 60 * 6;
+const STORAGE_KEY = "ghoulpool-deaths-2026-manual";
 
+// deaths = [{name, year}]
 let deaths = [];
 let deadSet = new Set();
-let manualMarks = {};
 
-function setStatus(msg, isError) {
-  const el = document.getElementById('statusMsg');
-  el.innerHTML = msg;
-  el.className = 'status' + (isError ? ' error' : '');
+async function loadFromStorage() {
+  try {
+    const saved = await window.storage.get(STORAGE_KEY);
+    if (saved) {
+      deaths = JSON.parse(saved.value);
+      deadSet = new Set(deaths.map(d => d.name.toLowerCase()));
+    }
+  } catch(e) {}
+  renderLeaderboard();
+  renderDeadList();
+  renderCard();
 }
 
-function debug(msg) {
-  const el = document.getElementById('debugBox');
-  el.style.display = 'block';
-  el.innerHTML += msg + '<br>';
+async function saveToStorage() {
+  try { await window.storage.set(STORAGE_KEY, JSON.stringify(deaths)); } catch(e) {}
 }
 
 function checkBingo(player) {
   const names = allPools[player];
-  const m = i => deadSet.has(names[i].toLowerCase()) || !!manualMarks[player+':'+i];
+  const m = i => deadSet.has(names[i].toLowerCase());
   for (let r = 0; r < 5; r++) if ([0,1,2,3,4].every(c => m(r*5+c))) return true;
   for (let c = 0; c < 5; c++) if ([0,1,2,3,4].every(r => m(r*5+c))) return true;
   if ([0,6,12,18,24].every(m)) return true;
   if ([4,8,12,16,20].every(m)) return true;
   return false;
-}
-
-async function loadDeaths(force) {
-  setStatus('<span class="spinner"></span> Searching for deaths...');
-  if (!force) {
-    try {
-      const cached = await window.storage.get(CACHE_KEY);
-      if (cached) {
-        const { d, ts } = JSON.parse(cached.value);
-        if (Date.now() - ts < CACHE_TTL) {
-          deaths = d;
-          deadSet = new Set(d.map(x => x.name.toLowerCase()));
-          setStatus(`Last updated: ${new Date(ts).toLocaleString()} · <a onclick="loadDeaths(true)">Refresh ↺</a>`);
-          renderLeaderboard(); renderCard(); return;
-        }
-      }
-    } catch(e) { debug('Cache read error: ' + e); }
-  }
-
-  const nameList = allNames.join(", ");
-  const prompt = `Search the web and identify which of these people have died. Only confirmed deaths. Today is March 2026. Return ONLY a valid JSON array, no markdown, no explanation. Format: [{"name":"Exact Name As Given","year":2025}]. If none have died return [].
-
-Names to check: ${nameList}`;
-
-  try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        tools: [{ type: "web_search_20250305", name: "web_search" }],
-        messages: [{ role: "user", content: prompt }]
-      })
-    });
-
-    if (!res.ok) {
-      const err = await res.text();
-      setStatus('API error: ' + res.status + '. <a onclick="loadDeaths(true)">Retry</a>', true);
-      debug('API error body: ' + err);
-      return;
-    }
-
-    const data = await res.json();
-    const textBlocks = (data.content || []).filter(b => b.type === "text").map(b => b.text);
-    const fullText = textBlocks.join("").replace(/```json|```/g, "").trim();
-
-    try {
-      const parsed = JSON.parse(fullText);
-      deaths = Array.isArray(parsed) ? parsed : [];
-    } catch(e) {
-      // Try extracting JSON array from text
-      const match = fullText.match(/\[[\s\S]*\]/);
-      if (match) {
-        try { deaths = JSON.parse(match[0]); } catch(e2) { deaths = []; }
-      } else {
-        deaths = [];
-        debug('Could not parse response: ' + fullText.slice(0,300));
-      }
-    }
-
-    deadSet = new Set(deaths.map(x => x.name.toLowerCase()));
-    const ts = Date.now();
-    try { await window.storage.set(CACHE_KEY, JSON.stringify({ d: deaths, ts })); } catch(e) {}
-    setStatus(`Last updated: ${new Date(ts).toLocaleString()} · <a onclick="loadDeaths(true)">Refresh ↺</a>`);
-    renderLeaderboard(); renderCard();
-
-  } catch(e) {
-    setStatus('Network error. <a onclick="loadDeaths(true)">Retry</a>', true);
-    debug('Fetch error: ' + e);
-  }
 }
 
 function renderLeaderboard() {
@@ -211,31 +192,30 @@ function renderLeaderboard() {
     return { k, dead, bingo: checkBingo(k) };
   }).sort((a,b) => b.dead.length - a.dead.length);
 
-  const anyBingo = rows.some(r => r.bingo);
-  let html = anyBingo ? '<div class="big-bingo">🎉 BINGO! 💀</div>' : '';
-
-  // Assign ranks accounting for ties
   let rank = 1;
   rows.forEach((row, i) => {
     if (i > 0 && row.dead.length < rows[i-1].dead.length) rank = i + 1;
     row.rank = rank;
   });
 
+  const anyBingo = rows.some(r => r.bingo);
+  let html = anyBingo ? '<div class="big-bingo">🎉 BINGO! 💀</div>' : '';
+
   rows.forEach((row, i) => {
-    const isTied = rows.filter(r => r.rank === row.rank).length > 1;
-    const rankLabel = isTied ? `T${row.rank}` : String(row.rank);
-    const medalOrRank = medals[row.rank-1] ? (isTied ? `T${medals[row.rank-1]}` : medals[row.rank-1]) : `#${rankLabel}`;
+    const tied = rows.filter(r => r.rank === row.rank).length > 1;
+    const medalBase = medals[row.rank-1] || `#${row.rank}`;
+    const medalLabel = tied ? `T${medalBase}` : medalBase;
     const rowClass = row.rank===1 ? 'first' : row.rank===2 ? 'second' : '';
     const pills = row.dead.length
       ? row.dead.map(n => {
-          const entry = deaths.find(d => d.name.toLowerCase() === n.toLowerCase());
-          return `<span class="pill">💀 ${n}${entry?.year ? ' ('+entry.year+')' : ''}</span>`;
+          const e = deaths.find(d => d.name.toLowerCase()===n.toLowerCase());
+          return `<span class="pill">💀 ${n}${e?.year?' ('+e.year+')':''}</span>`;
         }).join('')
       : '<span class="no-deaths">No deaths yet</span>';
     html += `<div class="lb-row ${rowClass}">
-      <div class="medal">${medalOrRank}</div>
+      <div class="medal">${medalLabel}</div>
       <div style="flex:1">
-        <div class="lb-name">${playerLabels[row.k]}${row.bingo ? ' 🎉 BINGO!' : ''}</div>
+        <div class="lb-name">${playerLabels[row.k]}${row.bingo?' 🎉 BINGO!':''}</div>
         <div class="lb-count">${row.dead.length} death${row.dead.length!==1?'s':''}</div>
         <div>${pills}</div>
       </div>
@@ -244,16 +224,88 @@ function renderLeaderboard() {
   document.getElementById('lbContent').innerHTML = html;
 }
 
+function searchForMark() {
+  const q = document.getElementById('markInput').value.trim().toLowerCase();
+  const el = document.getElementById('matchResults');
+  if (!q) { el.innerHTML = ''; return; }
+
+  const matches = allNames.filter(n => n.toLowerCase().includes(q));
+  if (!matches.length) {
+    el.innerHTML = `<div class="match-list"><div class="match-title">No names found matching "${q}"</div></div>`;
+    return;
+  }
+
+  const items = matches.map(name => {
+    const alreadyDead = deadSet.has(name.toLowerCase());
+    const players = Object.entries(allPools).filter(([,list]) => list.includes(name)).map(([k]) => playerLabels[k]).join(', ');
+    if (alreadyDead) {
+      return `<div class="match-item">
+        <div class="match-name">${name} <span style="color:#e74c3c;font-size:0.8em">💀 already marked</span>
+          <div class="match-players">${players}</div>
+        </div>
+        <div class="match-actions"><button class="mark-btn secondary" onclick="unmark('${name}')">Undo</button></div>
+      </div>`;
+    }
+    return `<div class="match-item">
+      <div class="match-name">${name}
+        <div class="match-players">${players}</div>
+      </div>
+      <div class="match-actions">
+        <input class="year-input" id="yr_${name.replace(/\s/g,'_')}" type="number" placeholder="Year" value="2026" min="2020" max="2030"/>
+        <button class="mark-btn" onclick="markDead('${name}')">Mark Dead</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `<div class="match-list"><div class="match-title">Matches:</div>${items}</div>`;
+}
+
+function markDead(name) {
+  if (deadSet.has(name.toLowerCase())) return;
+  const yrEl = document.getElementById('yr_' + name.replace(/\s/g,'_'));
+  const year = yrEl ? parseInt(yrEl.value) || 2026 : 2026;
+  deaths.push({ name, year });
+  deadSet.add(name.toLowerCase());
+  saveToStorage();
+  renderDeadList();
+  renderLeaderboard();
+  renderCard();
+  renderAllCards();
+  searchForMark(); // refresh match list
+  document.getElementById('markInput').value = '';
+  document.getElementById('matchResults').innerHTML = '';
+}
+
+function unmark(name) {
+  deaths = deaths.filter(d => d.name.toLowerCase() !== name.toLowerCase());
+  deadSet.delete(name.toLowerCase());
+  saveToStorage();
+  renderDeadList();
+  renderLeaderboard();
+  renderCard();
+  renderAllCards();
+  searchForMark();
+}
+
+function renderDeadList() {
+  const el = document.getElementById('deadList');
+  if (!deaths.length) { el.innerHTML = '<span class="no-dead">No deaths marked yet.</span>'; return; }
+  el.innerHTML = [...deaths].reverse().map(d =>
+    `<div class="dead-item">
+      <span class="dead-name">💀 ${d.name}</span>
+      <span class="dead-year">${d.year}</span>
+      <button class="undo-btn" onclick="unmark('${d.name}')">✕ Undo</button>
+    </div>`
+  ).join('');
+}
+
 function renderCard() {
   const p = document.getElementById('playerSelect').value;
   if (!p) { document.getElementById('cardArea').innerHTML = ''; return; }
   const names = allPools[p];
-  const cells = names.map((name, i) => {
+  const cells = names.map((name) => {
     const isDead = deadSet.has(name.toLowerCase());
-    const isManual = manualMarks[p+':'+i];
-    const cls = 'cell' + (isDead ? ' dead' : isManual ? ' manual' : '');
-    const click = !isDead ? `onclick="toggleManual('${p}',${i})"` : '';
-    return `<div class="${cls}" ${click}>${name}</div>`;
+    return `<div class="cell${isDead?' dead':''}">${name}</div>`;
   }).join('');
   const bingo = checkBingo(p);
   document.getElementById('cardArea').innerHTML = `
@@ -265,29 +317,13 @@ function renderCard() {
     </div>`;
 }
 
-function toggleManual(player, i) {
-  const k = player+':'+i;
-  manualMarks[k] = !manualMarks[k];
-  renderCard(); renderLeaderboard();
-}
-
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.tab')[['leaderboard','card','search','allcards'].indexOf(id)].classList.add('active');
-  if (id === 'allcards') renderAllCards();
-}
-
 function renderAllCards() {
   const area = document.getElementById('allCardsArea');
+  if (!area) return;
   area.innerHTML = Object.keys(allPools).map(p => {
-    const names = allPools[p];
-    const cells = names.map((name, i) => {
+    const cells = allPools[p].map(name => {
       const isDead = deadSet.has(name.toLowerCase());
-      const isManual = manualMarks[p+':'+i];
-      const cls = 'cell' + (isDead ? ' dead' : isManual ? ' manual' : '');
-      return `<div class="${cls}">${name}</div>`;
+      return `<div class="cell${isDead?' dead':''}">${name}</div>`;
     }).join('');
     const bingo = checkBingo(p);
     return `<div class="bingo-card" style="margin-bottom:32px">
@@ -297,6 +333,15 @@ function renderAllCards() {
       ${bingo ? '<div class="card-bingo">🎉 BINGO! 💀</div>' : ''}
     </div>`;
   }).join('');
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const idx = ['leaderboard','markdeaths','card','search','allcards'].indexOf(id);
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+  if (id === 'allcards') renderAllCards();
 }
 
 function doSearch() {
@@ -313,7 +358,7 @@ function doSearch() {
     : `<div class="search-box"><div class="sr-title">Results:</div>${hits.map(h=>`<div class="sr-hit">${h.dead?'💀':'👤'} <b>${h.label}</b> — ${h.match} ${h.dead?'<span class="sr-dead">(deceased)</span>':''}</div>`).join('')}</div>`;
 }
 
-loadDeaths(false);
+loadFromStorage();
 </script>
 </body>
 </html>
