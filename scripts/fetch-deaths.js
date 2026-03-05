@@ -13,7 +13,7 @@ const names = [
 ];
 
 const uniqueNames = [...new Set(names)];
-const BATCH_SIZE = 20;
+const BATCH_SIZE = 10;
 
 function chunk(arr, size) {
   const out = [];
@@ -93,10 +93,10 @@ async function fetchDeaths() {
     const filtered = results.filter(d => nameSetLower.has(d.name.toLowerCase()));
     console.log(`  → ${filtered.length} deaths found in this batch`);
     allDeaths = allDeaths.concat(filtered);
-    // Wait 10s between batches to avoid rate limits
+    // Wait 65s between batches to ensure the rate limit window resets
     if (i < batches.length - 1) {
-      console.log('  Waiting 10s before next batch...');
-      await sleep(10000);
+      console.log('  Waiting 65s before next batch...');
+      await sleep(65000);
     }
   }
 
