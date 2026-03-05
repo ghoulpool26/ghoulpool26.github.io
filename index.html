@@ -70,6 +70,8 @@
   .cell { background: #1a0808; border: 1px solid #5a2020; border-radius: 5px; min-height: 64px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.58em; padding: 4px; line-height: 1.3; position: relative; }
   .cell.dead { background: #8b0000; color: #fff; border-color: #c0392b; }
   .cell.dead::after { content: '💀'; position: absolute; top: 2px; right: 2px; font-size: 1.2em; opacity: 0.6; }
+  .cell.dq { background: #111; color: #444; border-color: #2a2a2a; text-decoration: line-through; cursor: default; }
+  .cell.dq::after { content: '✕'; position: absolute; top: 2px; right: 3px; font-size: 1em; color: #333; }
   .card-bingo { text-align: center; font-size: 1.4em; color: #ffd700; font-weight: bold; margin-top: 10px; letter-spacing: 3px; text-shadow: 0 0 10px #ffd700; }
 
   /* SEARCH */
@@ -175,6 +177,9 @@ const allPools = {
 };
 
 const playerLabels = { Katie:"Katie",Nan:"Nan",Tasia:"Tasia",Kyle:"Kyle",Sherry:"Sherry",Keri:"Keri",ChrisChelsea:"Chris & Chelsea",TomBenConnor:"Tom/Ben/Connor",Beth:"Beth",Jazzy:"Jazzy" };
+
+// Names that died before the pool started — show on card but don't count
+const disqualified = new Set(["robert redford"]);
 const allNames = [...new Set(Object.values(allPools).flat())];
 let deaths = [];
 let deadSet = new Set();
@@ -215,7 +220,7 @@ function saveManual() {
 
 function checkBingo(player) {
   const names = allPools[player];
-  const m = i => deadSet.has(names[i].toLowerCase());
+  const m = i => !disqualified.has(names[i].toLowerCase()) && deadSet.has(names[i].toLowerCase());
   for (let r = 0; r < 5; r++) if ([0,1,2,3,4].every(c => m(r*5+c))) return true;
   for (let c = 0; c < 5; c++) if ([0,1,2,3,4].every(r => m(r*5+c))) return true;
   if ([0,6,12,18,24].every(m)) return true;
@@ -226,7 +231,7 @@ function checkBingo(player) {
 function renderLeaderboard() {
   const medals = ["🥇","🥈","🥉"];
   const rows = Object.keys(allPools).map(k => {
-    const dead = allPools[k].filter(n => deadSet.has(n.toLowerCase()));
+    const dead = allPools[k].filter(n => !disqualified.has(n.toLowerCase()) && deadSet.has(n.toLowerCase()));
     return { k, dead, bingo: checkBingo(k) };
   }).sort((a,b) => b.dead.length - a.dead.length);
 
@@ -340,8 +345,10 @@ function renderCard() {
   if (!p) { document.getElementById('cardArea').innerHTML = ''; return; }
   const names = allPools[p];
   const cells = names.map((name) => {
-    const isDead = deadSet.has(name.toLowerCase());
-    return `<div class="cell${isDead?' dead':''}">${name}</div>`;
+    const isDQ = disqualified.has(name.toLowerCase());
+    const isDead = !isDQ && deadSet.has(name.toLowerCase());
+    const cls = 'cell' + (isDQ ? ' dq' : isDead ? ' dead' : '');
+    return `<div class="${cls}">${name}</div>`;
   }).join('');
   const bingo = checkBingo(p);
   document.getElementById('cardArea').innerHTML = `
