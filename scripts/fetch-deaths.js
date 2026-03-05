@@ -200,6 +200,11 @@ async function fetchDeaths() {
     console.log(`  → ${filtered.length} deaths found`);
     filtered.forEach(d => console.log(`     💀 ${d.name} (${d.date}) — ${d.source_name}`));
     allDeaths = allDeaths.concat(filtered);
+
+    if (i < batches.length - 1) {
+      console.log('  Waiting 15s before next batch...');
+      await sleep(15000);
+    }
   }
 
   return allDeaths;
