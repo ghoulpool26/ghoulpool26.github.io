@@ -8,32 +8,38 @@ const names = [
   "King Salman","Vladimir Putin","Bob Iger","Warren Buffett","Dan Rather","Raul Castro","Dick Greco","Andrea Mitchell","Alan Greenspan","William Shatner","Richard Shelby",
   "Wendy Williams","Naomi Campbell","Pete Doherty","Elon Musk","Carol Burnett","King Charles III","Eric Clapton","Will Smith","Woody Allen","Steven Tyler","Keith Richards","John Mulaney","Queen Camilla","Iggy Pop",
   "Pat Ryan","Burt Kreischer","John Frusciante","Jerry Jones","Jelly Roll","Morgan Freeman","MGK","Miley Cyrus","Johnny Manziel",
-  "Jack Nicklaus","Ayatollah Khamenei","Lee Corso","Arthur Blank","Paul McCartney","Dick Vitale","Terry Bradshaw","Ellen DeGeneres","John Thune","Joe Pesci","Mack Brown"
+  "Jack Nicklaus","Ayatollah Khamenei","Lee Corso","Arthur Blank","Paul McCartney","Dick Vitale","Terry Bradshaw","Ellen DeGeneres","John Thune","Joe Pesci","Mack Brown",
+  "Marjorie Taylor Greene","Usha Vance","Snoop Dogg","Drew Barrymore","Kylie Jenner","Timothée Chalamet","Mischa Barton"
 ];
 
 const uniqueNames = [...new Set(names)];
+const BATCH_SIZE = 20;
 
-async function fetchDeaths() {
+function chunk(arr, size) {
+  const out = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  return out;
+}
+
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+async function checkBatch(batch) {
   const prompt = `I am going to give you a list of names. For each person who has died, search the web to find and verify their death.
 
 CRITICAL RULES:
 - Only return names from my list below, copied exactly as written
 - Do NOT add any names not on my list
-- Only include confirmed deaths — you must find and visit a reputable news source (BBC, CNN, Reuters, AP, NPR, NYT, Washington Post, etc.) to verify
+- Only include confirmed deaths — you must visit a reputable news source (BBC, CNN, Reuters, AP, NPR, NYT, Washington Post, etc.) to verify
 - Return ONLY a JSON array, no markdown, no explanation
 - If none have died, return: []
 
 For each confirmed death return this exact format:
-{
-  "name": "Exact Name From List",
-  "year": 2026,
-  "date": "YYYY-MM-DD",
-  "source_name": "Name of news outlet e.g. BBC News",
-  "source_url": "Full URL of the specific article you visited and verified"
-}
+{"name":"Exact Name From List","year":2026,"date":"YYYY-MM-DD","source_name":"Outlet Name","source_url":"https://..."}
 
-List to check:
-${uniqueNames.join('\n')}`;
+List:
+${batch.join('\n')}`;
 
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -44,7 +50,7 @@ ${uniqueNames.join('\n')}`;
     },
     body: JSON.stringify({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 2000,
+      max_tokens: 1000,
       tools: [{ type: 'web_search_20250305', name: 'web_search' }],
       messages: [{ role: 'user', content: prompt }]
     })
@@ -72,17 +78,35 @@ ${uniqueNames.join('\n')}`;
     }
   }
 
-  // Safety filter: only keep names actually in our list
-  const nameSetLower = new Set(uniqueNames.map(n => n.toLowerCase()));
-  deaths = deaths.filter(d => nameSetLower.has(d.name.toLowerCase()));
+  return deaths;
+}
 
-  return { deaths, updated: new Date().toISOString() };
+async function fetchDeaths() {
+  const batches = chunk(uniqueNames, BATCH_SIZE);
+  const nameSetLower = new Set(uniqueNames.map(n => n.toLowerCase()));
+  let allDeaths = [];
+
+  for (let i = 0; i < batches.length; i++) {
+    console.log(`Checking batch ${i + 1}/${batches.length}: ${batches[i].join(', ')}`);
+    const results = await checkBatch(batches[i]);
+    // Safety filter
+    const filtered = results.filter(d => nameSetLower.has(d.name.toLowerCase()));
+    console.log(`  → ${filtered.length} deaths found in this batch`);
+    allDeaths = allDeaths.concat(filtered);
+    // Wait 10s between batches to avoid rate limits
+    if (i < batches.length - 1) {
+      console.log('  Waiting 10s before next batch...');
+      await sleep(10000);
+    }
+  }
+
+  return { deaths: allDeaths, updated: new Date().toISOString() };
 }
 
 fetchDeaths()
   .then(result => {
     fs.writeFileSync('deaths.json', JSON.stringify(result, null, 2));
-    console.log(`Done. Found ${result.deaths.length} deaths.`);
+    console.log(`\nDone. Found ${result.deaths.length} total deaths.`);
     result.deaths.forEach(d => console.log(` - ${d.name} (${d.date}) — ${d.source_name}: ${d.source_url}`));
   })
   .catch(err => {
