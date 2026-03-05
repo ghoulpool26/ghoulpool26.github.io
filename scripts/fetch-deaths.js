@@ -15,7 +15,7 @@ const names = [
 ];
 
 const uniqueNames = [...new Set(names)];
-const BATCH_SIZE = 15;
+const BATCH_SIZE = 25;
 
 // ── Load previous deaths so we can detect NEW ones ──────────
 let existingDeaths = [];
@@ -72,18 +72,18 @@ async function sendNtfyAlert(death) {
 
 // ── Anthropic batch check (unchanged) ───────────────────────
 async function checkBatchWithRetry(batch, maxRetries = 5) {
-  const prompt = `You are checking whether specific people have died. For EACH person in the list below, search the web for "[name] death" or "[name] obituary" to check if they have died.
+  const prompt = `Check if any of these people have died. Use a SMALL number of efficient web searches — do NOT search for each person individually. Instead:
+1. Search "notable celebrity deaths 2025 2026" and similar broad queries
+2. Search Wikipedia's "Deaths in 2025" and "Deaths in 2026" pages
+3. Only do individual searches for people you find mentioned in death-related results
 
-IMPORTANT: You must search for EVERY person individually or in small groups. Do NOT rely on a single broad search. Some deaths may only appear in specific searches.
+Use AT MOST 5 web searches total for this entire list.
 
 RULES:
 - Only return names from my list below, copied EXACTLY as written
-- Include deaths from any year (2024, 2025, 2026, etc.) — not just recent deaths
-- Only include deaths you can verify from a reputable source (BBC, CNN, Reuters, AP, NPR, NYT, Washington Post, Wikipedia, major newspaper obituaries, etc.)
-- If a search result headline mentions someone's death, INCLUDE them in the output
-- If you find conflicting information, search again to confirm
-- Return ONLY a raw JSON array as your final answer — no markdown fences, no explanation, no preamble
-- Do NOT begin your response with any text before the JSON
+- Include deaths from any year (2024, 2025, 2026, etc.)
+- Only include deaths verified from a reputable source (BBC, CNN, Reuters, AP, NPR, NYT, Washington Post, Wikipedia, etc.)
+- Return ONLY a raw JSON array — no markdown, no explanation, no preamble
 - If none have died, return exactly: []
 
 Format: [{"name":"Exact Name From List","year":YYYY,"date":"YYYY-MM-DD","source_name":"Outlet Name","source_url":"https://..."}]
