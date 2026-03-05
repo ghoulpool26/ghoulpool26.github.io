@@ -15,13 +15,15 @@ const names = [
 ];
 
 const uniqueNames = [...new Set(names)];
-const BATCH_SIZE = 10;
+const BATCH_SIZE = 30;
 
 // ── Load previous deaths so we can detect NEW ones ──────────
+let existingDeaths = [];
 let previousDeadNames = new Set();
 try {
   const prev = JSON.parse(fs.readFileSync('deaths.json', 'utf8'));
-  (prev.deaths || []).forEach(d => previousDeadNames.add(d.name));
+  existingDeaths = prev.deaths || [];
+  existingDeaths.forEach(d => previousDeadNames.add(d.name));
   console.log(`Loaded ${previousDeadNames.size} previously known death(s).`);
 } catch {
   console.log('No previous deaths.json found — first run.');
@@ -144,7 +146,11 @@ ${batch.join('\n')}`;
 
 // ── Main ────────────────────────────────────────────────────
 async function fetchDeaths() {
-  const batches = chunk(uniqueNames, BATCH_SIZE);
+  // Skip names already confirmed dead
+  const aliveNames = uniqueNames.filter(n => !previousDeadNames.has(n));
+  console.log(`${aliveNames.length} names to check (skipping ${previousDeadNames.size} known dead).`);
+
+  const batches = chunk(aliveNames, BATCH_SIZE);
   const nameSetLower = new Set(uniqueNames.map(n => n.toLowerCase()));
   let allDeaths = [];
 
@@ -155,20 +161,15 @@ async function fetchDeaths() {
     console.log(`  → ${filtered.length} deaths found`);
     filtered.forEach(d => console.log(`     💀 ${d.name} (${d.date}) — ${d.source_name}`));
     allDeaths = allDeaths.concat(filtered);
-
-    if (i < batches.length - 1) {
-      console.log('  Waiting 62s...');
-      await sleep(62000);
-    }
   }
 
-  return { deaths: allDeaths, updated: new Date().toISOString() };
+  return allDeaths;
 }
 
 fetchDeaths()
-  .then(async result => {
-    // ── Find NEW deaths and notify ────────────────────────
-    const newDeaths = result.deaths.filter(d => !previousDeadNames.has(d.name));
+  .then(async runDeaths => {
+    // ── Merge: add only NEW deaths to the existing list ───
+    const newDeaths = runDeaths.filter(d => !previousDeadNames.has(d.name));
 
     if (newDeaths.length > 0) {
       console.log(`\n🔔 ${newDeaths.length} NEW death(s) detected — sending notifications...`);
@@ -180,13 +181,14 @@ fetchDeaths()
       console.log('\nNo new deaths since last run.');
     }
 
-    fs.writeFileSync('deaths.json', JSON.stringify(result, null, 2));
-    console.log(`\n✅ Done. ${result.deaths.length} total deaths written to deaths.json`);
+    // Append new deaths to existing list (never overwrite)
+    const mergedDeaths = [...existingDeaths, ...newDeaths];
+    const output = { deaths: mergedDeaths, updated: new Date().toISOString() };
+    fs.writeFileSync('deaths.json', JSON.stringify(output, null, 2));
+    console.log(`\n✅ Done. ${mergedDeaths.length} total deaths in deaths.json (${newDeaths.length} new).`);
   })
   .catch(err => {
     console.error('Failed:', err.message);
-    if (!fs.existsSync('deaths.json')) {
-      fs.writeFileSync('deaths.json', JSON.stringify({ deaths: [], updated: new Date().toISOString() }, null, 2));
-    }
+    // On error, don't touch deaths.json — preserve existing data
     process.exit(1);
   });
