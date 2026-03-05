@@ -78,13 +78,15 @@ IMPORTANT: You must search for EVERY person individually or in small groups. Do 
 
 RULES:
 - Only return names from my list below, copied EXACTLY as written
-- Only include deaths you can verify from a reputable source (BBC, CNN, Reuters, AP, NPR, NYT, Washington Post, major newspaper obituaries, etc.)
+- Include deaths from any year (2024, 2025, 2026, etc.) — not just recent deaths
+- Only include deaths you can verify from a reputable source (BBC, CNN, Reuters, AP, NPR, NYT, Washington Post, Wikipedia, major newspaper obituaries, etc.)
+- If a search result headline mentions someone's death, INCLUDE them in the output
 - If you find conflicting information, search again to confirm
 - Return ONLY a raw JSON array as your final answer — no markdown fences, no explanation, no preamble
 - Do NOT begin your response with any text before the JSON
 - If none have died, return exactly: []
 
-Format: [{"name":"Exact Name From List","year":2026,"date":"YYYY-MM-DD","source_name":"Outlet Name","source_url":"https://..."}]
+Format: [{"name":"Exact Name From List","year":YYYY,"date":"YYYY-MM-DD","source_name":"Outlet Name","source_url":"https://..."}]
 
 People to check:
 ${batch.join('\n')}`;
@@ -152,13 +154,19 @@ ${batch.join('\n')}`;
         const clean = text.replace(/```json|```/g, '').trim();
         deaths = JSON.parse(clean);
       } catch (e) {
-        console.log(`  ⚠️ JSON parse failed: ${e.message}`);
         const match = text.match(/\[[\s\S]*\]/);
         if (match) {
-          console.log(`  🔧 Regex fallback match: ${match[0].substring(0, 300)}`);
-          try { deaths = JSON.parse(match[0]); } catch(e2) { deaths = []; }
+          try {
+            deaths = JSON.parse(match[0]);
+            console.log(`  🔧 JSON extracted via regex fallback`);
+          } catch(e2) {
+            console.log(`  ❌ Both JSON parse and regex fallback failed`);
+            console.log(`  Raw text: ${text.substring(0, 500)}`);
+            deaths = [];
+          }
         } else {
           console.log(`  ❌ No JSON array found in response`);
+          console.log(`  Raw text: ${text.substring(0, 500)}`);
         }
       }
 
