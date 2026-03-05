@@ -15,7 +15,7 @@ const names = [
 ];
 
 const uniqueNames = [...new Set(names)];
-const BATCH_SIZE = 30;
+const BATCH_SIZE = 15;
 
 // ── Load previous deaths so we can detect NEW ones ──────────
 let existingDeaths = [];
@@ -80,7 +80,8 @@ RULES:
 - Only return names from my list below, copied EXACTLY as written
 - Only include deaths you can verify from a reputable source (BBC, CNN, Reuters, AP, NPR, NYT, Washington Post, major newspaper obituaries, etc.)
 - If you find conflicting information, search again to confirm
-- Return ONLY a JSON array, no markdown, no explanation, no preamble
+- Return ONLY a raw JSON array as your final answer — no markdown fences, no explanation, no preamble
+- Do NOT begin your response with any text before the JSON
 - If none have died, return exactly: []
 
 Format: [{"name":"Exact Name From List","year":2026,"date":"YYYY-MM-DD","source_name":"Outlet Name","source_url":"https://..."}]
@@ -99,7 +100,7 @@ ${batch.join('\n')}`;
         },
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
-          max_tokens: 1000,
+          max_tokens: 4096,
           tools: [{ type: 'web_search_20250305', name: 'web_search' }],
           messages: [{ role: 'user', content: prompt }]
         })
@@ -114,6 +115,11 @@ ${batch.join('\n')}`;
 
       if (!res.ok) {
         const err = await res.text();
+        // Don't retry 400 errors (prompt too long, bad request) — they'll never succeed
+        if (res.status === 400) {
+          console.error(`  ❌ Non-retryable error ${res.status}: ${err.substring(0, 200)}`);
+          return [];
+        }
         throw new Error(`API error ${res.status}: ${err}`);
       }
 
