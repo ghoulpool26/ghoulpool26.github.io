@@ -16,16 +16,13 @@
   .page.active { display: block; }
   .status { text-align: center; color: #aaa; font-size: 0.8em; margin-bottom: 12px; min-height: 1.4em; }
   .status a { color: #c0392b; cursor: pointer; }
-  .status.error { color: #e74c3c; }
-  .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #555; border-top-color: #c0392b; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 6px; vertical-align: middle; }
-  @keyframes spin { to { transform: rotate(360deg); } }
 
   /* LEADERBOARD */
   .lb { max-width: 520px; margin: 0 auto; }
   .lb-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; background: #2a1010; border-radius: 8px; margin-bottom: 6px; border: 1px solid #5a2020; }
   .lb-row.first { background: #5a0000; border-color: #ffd700; }
   .lb-row.second { background: #3a1010; }
-  .medal { font-size: 1.2em; padding-top: 2px; min-width: 32px; text-align: center; }
+  .medal { font-size: 1.2em; padding-top: 2px; min-width: 36px; text-align: center; }
   .lb-name { font-weight: bold; font-size: 1em; margin-bottom: 3px; }
   .lb-count { font-size: 0.8em; color: #aaa; margin-bottom: 4px; }
   .pill { display: inline-block; background: #8b0000; border-radius: 12px; padding: 2px 8px; font-size: 0.7em; margin: 2px 3px; color: #fff; }
@@ -33,32 +30,40 @@
   .big-bingo { text-align: center; font-size: 1.6em; color: #ffd700; font-weight: bold; letter-spacing: 4px; text-shadow: 0 0 15px #ffd700; margin-bottom: 16px; animation: pulse 1s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
+  /* DEATHS PAGE */
+  .deaths-wrap { max-width: 560px; margin: 0 auto; }
+  .deaths-updated { text-align: center; color: #555; font-size: 0.75em; margin-bottom: 16px; }
+  .death-card { background: #2a1010; border: 1px solid #5a2020; border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; }
+  .death-card.dq-card { background: #111; border-color: #2a2a2a; opacity: 0.7; }
+  .death-card-name { font-size: 1.05em; font-weight: bold; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  .dq-badge { font-size: 0.65em; background: #333; color: #888; border-radius: 10px; padding: 2px 8px; font-weight: normal; letter-spacing: 1px; }
+  .death-card-date { font-size: 0.82em; color: #aaa; margin-bottom: 6px; }
+  .death-card-players { font-size: 0.78em; color: #888; margin-bottom: 8px; }
+  .death-card-source { font-size: 0.8em; margin-bottom: 8px; }
+  .death-card-source a { color: #c0392b; text-decoration: none; }
+  .death-card-source a:hover { text-decoration: underline; }
+  .death-card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .action-btn { font-size: 0.78em; padding: 3px 10px; border-radius: 4px; cursor: pointer; font-family: Georgia, serif; border: 1px solid #555; background: #1a0808; color: #aaa; }
+  .action-btn:hover { border-color: #c0392b; color: #e8d5b7; }
+  .action-btn.danger:hover { background: #5a0000; }
+  .deaths-empty { text-align: center; color: #666; font-style: italic; font-size: 0.9em; margin-top: 20px; }
+
   /* MARK DEATHS */
   .mark-wrap { max-width: 520px; margin: 0 auto; }
   .mark-row { display: flex; gap: 8px; margin-bottom: 16px; }
   .mark-input { flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #555; background: #2a1a1a; color: #e8d5b7; font-size: 0.95em; font-family: Georgia, serif; }
   .mark-input::placeholder { color: #666; }
-  .mark-btn { padding: 8px 14px; background: #8b0000; color: #fff; border: 1px solid #c0392b; border-radius: 6px; font-size: 0.95em; cursor: pointer; font-family: Georgia, serif; white-space: nowrap; }
+  .mark-btn { padding: 8px 14px; background: #8b0000; color: #fff; border: 1px solid #c0392b; border-radius: 6px; font-size: 0.95em; cursor: pointer; font-family: Georgia, serif; }
   .mark-btn:hover { background: #c0392b; }
-  .mark-btn.secondary { background: #2a1a1a; border-color: #555; }
-  .mark-btn.secondary:hover { background: #3a2a2a; }
   .match-list { background: #1a0808; border: 1px solid #5a2020; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; }
   .match-title { color: #c0392b; font-weight: bold; margin-bottom: 8px; font-size: 0.9em; }
-  .match-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #2a1010; font-size: 0.88em; }
+  .match-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #2a1010; font-size: 0.88em; gap: 8px; }
   .match-item:last-child { border-bottom: none; }
   .match-name { flex: 1; }
   .match-players { font-size: 0.78em; color: #888; margin-top: 2px; }
-  .match-actions { display: flex; gap: 6px; }
-  .dead-list { background: #1a0808; border: 1px solid #5a2020; border-radius: 8px; padding: 12px 16px; }
-  .dead-title { color: #c0392b; font-weight: bold; margin-bottom: 8px; font-size: 0.9em; }
-  .dead-item { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #2a1010; font-size: 0.88em; }
-  .dead-item:last-child { border-bottom: none; }
-  .dead-name { flex: 1; }
-  .dead-year { color: #888; font-size: 0.85em; margin: 0 10px; }
-  .undo-btn { background: none; border: 1px solid #555; border-radius: 4px; color: #aaa; font-size: 0.78em; cursor: pointer; padding: 2px 8px; font-family: Georgia, serif; }
-  .undo-btn:hover { border-color: #c0392b; color: #e8d5b7; }
-  .no-dead { color: #666; font-style: italic; font-size: 0.85em; }
+  .match-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
   .year-input { width: 70px; padding: 4px 8px; border-radius: 4px; border: 1px solid #555; background: #2a1a1a; color: #e8d5b7; font-size: 0.85em; font-family: Georgia, serif; }
+  .mark-note { color: #666; font-size: 0.8em; font-style: italic; text-align: center; margin-top: 8px; }
 
   /* CARD */
   .player-select { display: block; margin: 0 auto 20px; padding: 8px 16px; border-radius: 6px; border: 1px solid #555; background: #2a1a1a; color: #e8d5b7; font-size: 0.95em; font-family: Georgia, serif; }
@@ -70,8 +75,9 @@
   .cell { background: #1a0808; border: 1px solid #5a2020; border-radius: 5px; min-height: 64px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.58em; padding: 4px; line-height: 1.3; position: relative; }
   .cell.dead { background: #8b0000; color: #fff; border-color: #c0392b; }
   .cell.dead::after { content: '💀'; position: absolute; top: 2px; right: 2px; font-size: 1.2em; opacity: 0.6; }
-  .cell.dq { background: #111; color: #444; border-color: #2a2a2a; text-decoration: line-through; cursor: default; }
+  .cell.dq { background: #111; color: #3a3a3a; border-color: #222; text-decoration: line-through; }
   .cell.dq::after { content: '✕'; position: absolute; top: 2px; right: 3px; font-size: 1em; color: #333; }
+  .cell-blank { background: #111; border: 1px solid #1a1a1a; border-radius: 5px; min-height: 64px; }
   .card-bingo { text-align: center; font-size: 1.4em; color: #ffd700; font-weight: bold; margin-top: 10px; letter-spacing: 3px; text-shadow: 0 0 10px #ffd700; }
 
   /* SEARCH */
@@ -84,25 +90,13 @@
   .sr-hit { padding: 3px 0; font-size: 0.9em; }
   .sr-dead { color: #e74c3c; font-size: 0.8em; }
   .sr-none { color: #888; font-style: italic; font-size: 0.9em; }
-
-  /* DEATHS PAGE */
-  .deaths-wrap { max-width: 560px; margin: 0 auto; }
-  .death-card { background: #2a1010; border: 1px solid #5a2020; border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; }
-  .death-card-name { font-size: 1.05em; font-weight: bold; margin-bottom: 4px; }
-  .death-card-date { font-size: 0.82em; color: #aaa; margin-bottom: 6px; }
-  .death-card-players { font-size: 0.78em; color: #888; margin-bottom: 8px; }
-  .death-card-source { font-size: 0.8em; }
-  .death-card-source a { color: #c0392b; text-decoration: none; }
-  .death-card-source a:hover { text-decoration: underline; }
-  .deaths-empty { text-align: center; color: #666; font-style: italic; font-size: 0.9em; margin-top: 20px; }
-  .deaths-updated { text-align: center; color: #555; font-size: 0.75em; margin-bottom: 16px; }
 </style>
 </head>
 <body>
 <h1>☠️ GHOUL POOL BINGO ☠️</h1>
 <p class="sub">2026 Edition</p>
 <div class="tabs">
-  <button class="tab" onclick="showPage('leaderboard')">🏆 Leaderboard</button>
+  <button class="tab active" onclick="showPage('leaderboard')">🏆 Leaderboard</button>
   <button class="tab" onclick="showPage('deathspage')">☠️ Deaths</button>
   <button class="tab" onclick="showPage('markdeaths')">✏️ Mark Deaths</button>
   <button class="tab" onclick="showPage('card')">🎮 Select Player</button>
@@ -127,10 +121,7 @@
       <button class="mark-btn" onclick="searchForMark()">Search</button>
     </div>
     <div id="matchResults"></div>
-    <div class="dead-list">
-      <div class="dead-title">☠️ Confirmed Deaths</div>
-      <div id="deadList"><span class="no-dead">No deaths marked yet.</span></div>
-    </div>
+    <p class="mark-note">To remove a death or mark as disqualified, go to the ☠️ Deaths tab.</p>
   </div>
 </div>
 
@@ -178,28 +169,39 @@ const allPools = {
 
 const playerLabels = { Katie:"Katie",Nan:"Nan",Tasia:"Tasia",Kyle:"Kyle",Sherry:"Sherry",Keri:"Keri",ChrisChelsea:"Chris & Chelsea",TomBenConnor:"Tom/Ben/Connor",Beth:"Beth",Jazzy:"Jazzy" };
 
-// Names that died before the pool started — show on card but don't count
+// Names disqualified from scoring (died before pool started)
 const disqualified = new Set(["robert redford"]);
-const allNames = [...new Set(Object.values(allPools).flat())];
-let deaths = [];
+
+const allNames = [...new Set(Object.values(allPools).flat().filter(n => n))];
+
+let deaths = [];       // [{name, year, date, source_name, source_url}]
 let deadSet = new Set();
-let manualOverrides = JSON.parse(localStorage.getItem('ghoulpool-manual-2026') || '[]');
+let manualOverrides = [];
+let lastUpdated = null;
+
+function isScoring(name) {
+  return !disqualified.has(name.toLowerCase());
+}
 
 async function loadFromStorage() {
-  // Try fetching auto-updated deaths.json first
+  try {
+    const raw = localStorage.getItem('ghoulpool-manual-2026');
+    if (raw) manualOverrides = JSON.parse(raw);
+  } catch(e) {}
+
   try {
     const res = await fetch('deaths.json?nocache=' + Date.now());
     if (res.ok) {
       const data = await res.json();
       deaths = data.deaths || [];
-      const updated = data.updated ? new Date(data.updated).toLocaleString() : null;
-      if (updated) document.getElementById('statusMsg').innerHTML = `Auto-updated: ${updated}`;
+      lastUpdated = data.updated ? new Date(data.updated).toLocaleString() : null;
+      if (lastUpdated) document.getElementById('statusMsg').innerHTML = `Auto-updated: ${lastUpdated}`;
     }
   } catch(e) {
-    document.getElementById('statusMsg').innerHTML = 'Could not load deaths.json — using manual entries only.';
+    document.getElementById('statusMsg').innerHTML = 'Using manual entries only.';
   }
 
-  // Merge manual overrides (additions or removals not in auto list)
+  // Apply manual overrides
   manualOverrides.forEach(o => {
     if (o.removed) {
       deaths = deaths.filter(d => d.name.toLowerCase() !== o.name.toLowerCase());
@@ -209,18 +211,23 @@ async function loadFromStorage() {
   });
 
   deadSet = new Set(deaths.map(d => d.name.toLowerCase()));
-  renderLeaderboard();
-  renderDeadList();
-  renderCard();
+  renderAll();
 }
 
 function saveManual() {
   localStorage.setItem('ghoulpool-manual-2026', JSON.stringify(manualOverrides));
 }
 
+function renderAll() {
+  renderLeaderboard();
+  renderDeathsPage();
+  renderCard();
+  renderAllCards();
+}
+
 function checkBingo(player) {
   const names = allPools[player];
-  const m = i => !disqualified.has(names[i].toLowerCase()) && deadSet.has(names[i].toLowerCase());
+  const m = i => names[i] && isScoring(names[i]) && deadSet.has(names[i].toLowerCase());
   for (let r = 0; r < 5; r++) if ([0,1,2,3,4].every(c => m(r*5+c))) return true;
   for (let c = 0; c < 5; c++) if ([0,1,2,3,4].every(r => m(r*5+c))) return true;
   if ([0,6,12,18,24].every(m)) return true;
@@ -231,7 +238,7 @@ function checkBingo(player) {
 function renderLeaderboard() {
   const medals = ["🥇","🥈","🥉"];
   const rows = Object.keys(allPools).map(k => {
-    const dead = allPools[k].filter(n => !disqualified.has(n.toLowerCase()) && deadSet.has(n.toLowerCase()));
+    const dead = allPools[k].filter(n => n && isScoring(n) && deadSet.has(n.toLowerCase()));
     return { k, dead, bingo: checkBingo(k) };
   }).sort((a,b) => b.dead.length - a.dead.length);
 
@@ -267,6 +274,72 @@ function renderLeaderboard() {
   document.getElementById('lbContent').innerHTML = html;
 }
 
+function renderDeathsPage() {
+  const el = document.getElementById('deathsList');
+  const upEl = document.getElementById('deathsUpdated');
+  upEl.innerHTML = lastUpdated ? `Data last fetched: ${lastUpdated}` : '';
+
+  if (!deaths.length) {
+    el.innerHTML = '<div class="deaths-empty">No confirmed deaths yet. ☠️</div>';
+    return;
+  }
+
+  const sorted = [...deaths].sort((a,b) => {
+    // DQ'd to bottom, then by date desc
+    const aDQ = disqualified.has(a.name.toLowerCase());
+    const bDQ = disqualified.has(b.name.toLowerCase());
+    if (aDQ !== bDQ) return aDQ ? 1 : -1;
+    return (b.date||'').localeCompare(a.date||'');
+  });
+
+  el.innerHTML = sorted.map(d => {
+    const isDQ = disqualified.has(d.name.toLowerCase());
+    const players = Object.entries(allPools)
+      .filter(([,list]) => list.some(n => n.toLowerCase() === d.name.toLowerCase()))
+      .map(([k]) => playerLabels[k]).join(', ');
+    const dateStr = d.date
+      ? new Date(d.date + 'T12:00:00').toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' })
+      : d.year || '';
+    const sourceHtml = d.source_url
+      ? `<div class="death-card-source">📰 <a href="${d.source_url}" target="_blank" rel="noopener">${d.source_name || d.source_url}</a></div>`
+      : d.source_name ? `<div class="death-card-source">📰 ${d.source_name}</div>` : '';
+    const dqBadge = isDQ ? `<span class="dq-badge">DISQUALIFIED</span>` : '';
+    const dqBtn = isDQ
+      ? `<button class="action-btn" onclick="requalify('${d.name}')">✓ Re-qualify</button>`
+      : `<button class="action-btn" onclick="disqualifyDeath('${d.name}')">🚫 Disqualify</button>`;
+
+    return `<div class="death-card${isDQ?' dq-card':''}">
+      <div class="death-card-name">${isDQ?'✕':'💀'} ${d.name} ${dqBadge}</div>
+      <div class="death-card-date">${dateStr}</div>
+      <div class="death-card-players">On ${players ? players+"'s card"+(players.includes(',')?"s":'') : "no active cards"}</div>
+      ${sourceHtml}
+      <div class="death-card-actions">
+        ${dqBtn}
+        <button class="action-btn danger" onclick="removeDeath('${d.name}')">✕ Remove</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function disqualifyDeath(name) {
+  disqualified.add(name.toLowerCase());
+  renderAll();
+}
+
+function requalify(name) {
+  disqualified.delete(name.toLowerCase());
+  renderAll();
+}
+
+function removeDeath(name) {
+  deaths = deaths.filter(d => d.name.toLowerCase() !== name.toLowerCase());
+  deadSet.delete(name.toLowerCase());
+  manualOverrides = manualOverrides.filter(o => o.name.toLowerCase() !== name.toLowerCase());
+  manualOverrides.push({ name, removed: true });
+  saveManual();
+  renderAll();
+}
+
 function searchForMark() {
   const q = document.getElementById('markInput').value.trim().toLowerCase();
   const el = document.getElementById('matchResults');
@@ -280,21 +353,20 @@ function searchForMark() {
 
   const items = matches.map(name => {
     const alreadyDead = deadSet.has(name.toLowerCase());
-    const players = Object.entries(allPools).filter(([,list]) => list.includes(name)).map(([k]) => playerLabels[k]).join(', ');
+    const players = Object.entries(allPools)
+      .filter(([,list]) => list.includes(name))
+      .map(([k]) => playerLabels[k]).join(', ');
     if (alreadyDead) {
       return `<div class="match-item">
         <div class="match-name">${name} <span style="color:#e74c3c;font-size:0.8em">💀 already marked</span>
           <div class="match-players">${players}</div>
         </div>
-        <div class="match-actions"><button class="mark-btn secondary" onclick="unmark('${name}')">Undo</button></div>
       </div>`;
     }
     return `<div class="match-item">
-      <div class="match-name">${name}
-        <div class="match-players">${players}</div>
-      </div>
+      <div class="match-name">${name}<div class="match-players">${players}</div></div>
       <div class="match-actions">
-        <input class="year-input" id="yr_${name.replace(/\s/g,'_')}" type="number" placeholder="Year" value="2026" min="2020" max="2030"/>
+        <input class="year-input" id="yr_${name.replace(/[^a-z0-9]/gi,'_')}" type="number" placeholder="Year" value="2026" min="2020" max="2030"/>
         <button class="mark-btn" onclick="markDead('${name}')">Mark Dead</button>
       </div>
     </div>`;
@@ -305,50 +377,27 @@ function searchForMark() {
 
 function markDead(name) {
   if (deadSet.has(name.toLowerCase())) return;
-  const yrEl = document.getElementById('yr_' + name.replace(/\s/g,'_'));
+  const yrEl = document.getElementById('yr_' + name.replace(/[^a-z0-9]/gi,'_'));
   const year = yrEl ? parseInt(yrEl.value) || 2026 : 2026;
   deaths.push({ name, year });
   deadSet.add(name.toLowerCase());
   manualOverrides = manualOverrides.filter(o => o.name.toLowerCase() !== name.toLowerCase());
   manualOverrides.push({ name, year });
   saveManual();
-  renderDeadList(); renderLeaderboard(); renderCard(); renderAllCards();
-  searchForMark();
+  renderAll();
   document.getElementById('markInput').value = '';
   document.getElementById('matchResults').innerHTML = '';
-}
-
-function unmark(name) {
-  deaths = deaths.filter(d => d.name.toLowerCase() !== name.toLowerCase());
-  deadSet.delete(name.toLowerCase());
-  manualOverrides = manualOverrides.filter(o => o.name.toLowerCase() !== name.toLowerCase());
-  manualOverrides.push({ name, removed: true });
-  saveManual();
-  renderDeadList(); renderLeaderboard(); renderCard(); renderAllCards();
-  searchForMark();
-}
-
-function renderDeadList() {
-  const el = document.getElementById('deadList');
-  if (!deaths.length) { el.innerHTML = '<span class="no-dead">No deaths marked yet.</span>'; return; }
-  el.innerHTML = [...deaths].reverse().map(d =>
-    `<div class="dead-item">
-      <span class="dead-name">💀 ${d.name}</span>
-      <span class="dead-year">${d.year}</span>
-      <button class="undo-btn" onclick="unmark('${d.name}')">✕ Undo</button>
-    </div>`
-  ).join('');
 }
 
 function renderCard() {
   const p = document.getElementById('playerSelect').value;
   if (!p) { document.getElementById('cardArea').innerHTML = ''; return; }
   const names = allPools[p];
-  const cells = names.map((name) => {
+  const cells = names.map(name => {
+    if (!name) return `<div class="cell-blank"></div>`;
     const isDQ = disqualified.has(name.toLowerCase());
     const isDead = !isDQ && deadSet.has(name.toLowerCase());
-    const cls = 'cell' + (isDQ ? ' dq' : isDead ? ' dead' : '');
-    return `<div class="${cls}">${name}</div>`;
+    return `<div class="cell${isDQ?' dq':isDead?' dead':''}">${name}</div>`;
   }).join('');
   const bingo = checkBingo(p);
   document.getElementById('cardArea').innerHTML = `
@@ -365,8 +414,10 @@ function renderAllCards() {
   if (!area) return;
   area.innerHTML = Object.keys(allPools).map(p => {
     const cells = allPools[p].map(name => {
-      const isDead = deadSet.has(name.toLowerCase());
-      return `<div class="cell${isDead?' dead':''}">${name}</div>`;
+      if (!name) return `<div class="cell-blank"></div>`;
+      const isDQ = disqualified.has(name.toLowerCase());
+      const isDead = !isDQ && deadSet.has(name.toLowerCase());
+      return `<div class="cell${isDQ?' dq':isDead?' dead':''}">${name}</div>`;
     }).join('');
     const bingo = checkBingo(p);
     return `<div class="bingo-card" style="margin-bottom:32px">
@@ -385,33 +436,6 @@ function showPage(id) {
   const idx = ['leaderboard','deathspage','markdeaths','card','search','allcards'].indexOf(id);
   document.querySelectorAll('.tab')[idx].classList.add('active');
   if (id === 'allcards') renderAllCards();
-  if (id === 'deathspage') renderDeathsPage();
-}
-
-function renderDeathsPage() {
-  const el = document.getElementById('deathsList');
-  const upEl = document.getElementById('deathsUpdated');
-  if (!deaths.length) {
-    el.innerHTML = '<div class="deaths-empty">No confirmed deaths yet. Check back later. ☠️</div>';
-    return;
-  }
-  const sorted = [...deaths].sort((a,b) => (b.date||'').localeCompare(a.date||''));
-  upEl.innerHTML = lastUpdated ? `Data last fetched: ${lastUpdated}` : '';
-  el.innerHTML = sorted.map(d => {
-    const players = Object.entries(allPools)
-      .filter(([,list]) => list.some(n => n.toLowerCase() === d.name.toLowerCase()))
-      .map(([k]) => playerLabels[k]).join(', ');
-    const dateStr = d.date ? new Date(d.date + 'T12:00:00').toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }) : d.year;
-    const sourceHtml = d.source_url
-      ? `<div class="death-card-source">📰 <a href="${d.source_url}" target="_blank" rel="noopener">${d.source_name || d.source_url}</a></div>`
-      : d.source_name ? `<div class="death-card-source">📰 ${d.source_name}</div>` : '';
-    return `<div class="death-card">
-      <div class="death-card-name">💀 ${d.name}</div>
-      <div class="death-card-date">${dateStr}</div>
-      <div class="death-card-players">On ${players}'s card${players.includes(',') ? 's' : ''}</div>
-      ${sourceHtml}
-    </div>`;
-  }).join('');
 }
 
 function doSearch() {
@@ -420,12 +444,14 @@ function doSearch() {
   if (!q) { el.innerHTML = ''; return; }
   const hits = [];
   for (const [k, list] of Object.entries(allPools)) {
-    const match = list.find(n => n.toLowerCase().includes(q));
-    if (match) hits.push({ label: playerLabels[k], match, dead: deadSet.has(match.toLowerCase()) });
+    const match = list.find(n => n && n.toLowerCase().includes(q));
+    if (match) hits.push({ label: playerLabels[k], match, dead: deadSet.has(match.toLowerCase()), dq: disqualified.has(match.toLowerCase()) });
   }
   el.innerHTML = hits.length === 0
     ? '<div class="search-box"><span class="sr-none">Nobody has that name on their list.</span></div>'
-    : `<div class="search-box"><div class="sr-title">Results:</div>${hits.map(h=>`<div class="sr-hit">${h.dead?'💀':'👤'} <b>${h.label}</b> — ${h.match} ${h.dead?'<span class="sr-dead">(deceased)</span>':''}</div>`).join('')}</div>`;
+    : `<div class="search-box"><div class="sr-title">Results:</div>${hits.map(h =>
+        `<div class="sr-hit">${h.dq?'✕':h.dead?'💀':'👤'} <b>${h.label}</b> — ${h.match} ${h.dq?'<span class="sr-dead">(disqualified)</span>':h.dead?'<span class="sr-dead">(deceased)</span>':''}</div>`
+      ).join('')}</div>`;
 }
 
 loadFromStorage();
