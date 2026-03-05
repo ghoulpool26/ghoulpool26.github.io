@@ -72,18 +72,20 @@ async function sendNtfyAlert(death) {
 
 // ── Anthropic batch check (unchanged) ───────────────────────
 async function checkBatchWithRetry(batch, maxRetries = 5) {
-  const prompt = `For each person in this list who has DIED, search the web to verify their death using a reputable news source.
+  const prompt = `You are checking whether specific people have died. For EACH person in the list below, search the web for "[name] death" or "[name] obituary" to check if they have died.
 
-CRITICAL RULES:
-- Only return names from my list below, copied exactly as written
-- Do NOT add any names not on my list
-- Only include confirmed deaths — you must visit a reputable news source (BBC, CNN, Reuters, AP, NPR, NYT, Washington Post, etc.) to verify
-- Return ONLY a JSON array, no markdown, no explanation
-- If none have died, return: []
+IMPORTANT: You must search for EVERY person individually or in small groups. Do NOT rely on a single broad search. Some deaths may only appear in specific searches.
 
-Format: [{"name":"Exact Name","year":2026,"date":"YYYY-MM-DD","source_name":"Outlet","source_url":"https://..."}]
+RULES:
+- Only return names from my list below, copied EXACTLY as written
+- Only include deaths you can verify from a reputable source (BBC, CNN, Reuters, AP, NPR, NYT, Washington Post, major newspaper obituaries, etc.)
+- If you find conflicting information, search again to confirm
+- Return ONLY a JSON array, no markdown, no explanation, no preamble
+- If none have died, return exactly: []
 
-List:
+Format: [{"name":"Exact Name From List","year":2026,"date":"YYYY-MM-DD","source_name":"Outlet Name","source_url":"https://..."}]
+
+People to check:
 ${batch.join('\n')}`;
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -116,22 +118,45 @@ ${batch.join('\n')}`;
       }
 
       const data = await res.json();
+
+      // ── Debug: log every content block ──────────────────
+      console.log(`  📋 Response blocks (${(data.content || []).length}):`);
+      for (const block of (data.content || [])) {
+        if (block.type === 'text') {
+          console.log(`    [text] ${block.text.substring(0, 300)}${block.text.length > 300 ? '...' : ''}`);
+        } else if (block.type === 'tool_use') {
+          console.log(`    [tool_use] ${block.name} → ${JSON.stringify(block.input).substring(0, 200)}`);
+        } else if (block.type === 'tool_result') {
+          const preview = JSON.stringify(block.content).substring(0, 300);
+          console.log(`    [tool_result] ${preview}${JSON.stringify(block.content).length > 300 ? '...' : ''}`);
+        } else {
+          console.log(`    [${block.type}] ${JSON.stringify(block).substring(0, 200)}`);
+        }
+      }
+
       const text = (data.content || [])
         .filter(b => b.type === 'text')
         .map(b => b.text)
         .join('');
+
+      console.log(`  🔍 Final text output: ${text.substring(0, 500)}${text.length > 500 ? '...' : ''}`);
 
       let deaths = [];
       try {
         const clean = text.replace(/```json|```/g, '').trim();
         deaths = JSON.parse(clean);
       } catch (e) {
+        console.log(`  ⚠️ JSON parse failed: ${e.message}`);
         const match = text.match(/\[[\s\S]*\]/);
         if (match) {
+          console.log(`  🔧 Regex fallback match: ${match[0].substring(0, 300)}`);
           try { deaths = JSON.parse(match[0]); } catch(e2) { deaths = []; }
+        } else {
+          console.log(`  ❌ No JSON array found in response`);
         }
       }
 
+      console.log(`  ✅ Parsed ${deaths.length} death(s) from this batch`);
       return deaths;
 
     } catch(e) {
