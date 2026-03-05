@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+const NTFY_TOPIC = 'ghoulpool26-alerts';
+
 const names = [
   "Robert Redford","Chuck Grassley","Lou Holtz","Deion Sanders","Ariana Grande","Paul Pelosi","Bryan Johnson","Mel Brooks","Ric Flair","Clint Eastwood","Virginia Foxx","Robert Plant","Willie Nelson","Rudy Giuliani","Kanye West","Mitch McConnell","Joe Namath","Antonio Brown","Donald Trump","Phil Knight","Dick Van Dyke","Clarence Thomas","Bernie Kosar","Julie Andrews","Dolly Parton",
   "Harvey Weinstein","King Charles","Katy Perry","Guy Fieri","Phil Mickelson","Bill Belichick","Andrew Windsor","Danny DeVito","John Kerry","Jax Taylor","Jim Carrey","George W Bush","George Strait","Nancy Pelosi","Steve Spurrier","Corey Feldman","Bill Clinton","Flavor Flav","Bruce Willis","RFK","Stephen Fry",
@@ -15,6 +17,17 @@ const names = [
 const uniqueNames = [...new Set(names)];
 const BATCH_SIZE = 10;
 
+// ── Load previous deaths so we can detect NEW ones ──────────
+let previousDeadNames = new Set();
+try {
+  const prev = JSON.parse(fs.readFileSync('deaths.json', 'utf8'));
+  (prev.deaths || []).forEach(d => previousDeadNames.add(d.name));
+  console.log(`Loaded ${previousDeadNames.size} previously known death(s).`);
+} catch {
+  console.log('No previous deaths.json found — first run.');
+}
+
+// ── Helpers ─────────────────────────────────────────────────
 function chunk(arr, size) {
   const out = [];
   for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
@@ -25,6 +38,37 @@ function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
+// ── ntfy notification ───────────────────────────────────────
+async function sendNtfyAlert(death) {
+  if (!NTFY_TOPIC) return;
+
+  const body = JSON.stringify({
+    topic: NTFY_TOPIC,
+    title: `☠️ ${death.name} has died`,
+    message: [
+      death.date ? `Date: ${death.date}` : null,
+      death.source_name ? `Source: ${death.source_name}` : null,
+      '',
+      'https://ghoulpool26.github.io'
+    ].filter(x => x !== null).join('\n'),
+    tags: ['skull'],
+    priority: 4,
+    click: death.source_url || 'https://ghoulpool26.github.io'
+  });
+
+  try {
+    const res = await fetch('https://ntfy.sh', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body
+    });
+    console.log(`  📲 ntfy notification sent (${res.status})`);
+  } catch (e) {
+    console.error(`  ❌ ntfy send failed: ${e.message}`);
+  }
+}
+
+// ── Anthropic batch check (unchanged) ───────────────────────
 async function checkBatchWithRetry(batch, maxRetries = 5) {
   const prompt = `For each person in this list who has DIED, search the web to verify their death using a reputable news source.
 
@@ -57,7 +101,7 @@ ${batch.join('\n')}`;
       });
 
       if (res.status === 429) {
-        const waitMs = Math.pow(2, attempt + 1) * 30000; // 60s, 120s, 240s...
+        const waitMs = Math.pow(2, attempt + 1) * 30000;
         console.log(`  Rate limited. Waiting ${waitMs/1000}s before retry ${attempt + 1}/${maxRetries}...`);
         await sleep(waitMs);
         continue;
@@ -97,6 +141,7 @@ ${batch.join('\n')}`;
   return [];
 }
 
+// ── Main ────────────────────────────────────────────────────
 async function fetchDeaths() {
   const batches = chunk(uniqueNames, BATCH_SIZE);
   const nameSetLower = new Set(uniqueNames.map(n => n.toLowerCase()));
@@ -120,7 +165,20 @@ async function fetchDeaths() {
 }
 
 fetchDeaths()
-  .then(result => {
+  .then(async result => {
+    // ── Find NEW deaths and notify ────────────────────────
+    const newDeaths = result.deaths.filter(d => !previousDeadNames.has(d.name));
+
+    if (newDeaths.length > 0) {
+      console.log(`\n🔔 ${newDeaths.length} NEW death(s) detected — sending notifications...`);
+      for (const death of newDeaths) {
+        console.log(`  → Notifying: ${death.name}`);
+        await sendNtfyAlert(death);
+      }
+    } else {
+      console.log('\nNo new deaths since last run.');
+    }
+
     fs.writeFileSync('deaths.json', JSON.stringify(result, null, 2));
     console.log(`\n✅ Done. ${result.deaths.length} total deaths written to deaths.json`);
   })
