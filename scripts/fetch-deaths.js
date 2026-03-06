@@ -79,10 +79,13 @@ async function checkBatchWithRetry(batch, maxRetries = 5) {
 
 Use AT MOST 5 web searches total for this entire list.
 
-RULES:
+CRITICAL ACCURACY RULES:
+- ONLY report a death if you see the person's name EXPLICITLY mentioned in a search result snippet as having died
+- Do NOT guess or infer deaths — if you don't see clear confirmation, do NOT include them
+- If you are uncertain about ANYONE, leave them OUT of the results
+- It is much better to return [] than to include an unverified death
 - Only return names from my list below, copied EXACTLY as written
 - Include deaths from any year (2024, 2025, 2026, etc.)
-- Only include deaths verified from a reputable source (BBC, CNN, Reuters, AP, NPR, NYT, Washington Post, Wikipedia, etc.)
 - Return ONLY a raw JSON array — no markdown, no explanation, no preamble
 - If none have died, return exactly: []
 
@@ -171,6 +174,18 @@ ${batch.join('\n')}`;
       }
 
       console.log(`  ✅ Parsed ${deaths.length} death(s) from this batch`);
+
+      // Hallucination check: if 3+ deaths share the exact same date, reject all
+      if (deaths.length >= 3) {
+        const dateCounts = {};
+        deaths.forEach(d => { dateCounts[d.date] = (dateCounts[d.date] || 0) + 1; });
+        const maxSameDate = Math.max(...Object.values(dateCounts));
+        if (maxSameDate >= 3) {
+          console.log(`  🚫 Hallucination detected: ${maxSameDate} deaths on same date. Discarding batch.`);
+          return [];
+        }
+      }
+
       return deaths;
 
     } catch(e) {
