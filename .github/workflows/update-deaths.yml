@@ -2,7 +2,7 @@ name: Update Deaths
 
 on:
   schedule:
-    - cron: '0 8 * * *'  # every day
+    - cron: '0 8 * * 1,5'  # every Monday and Fridayy
   workflow_dispatch:        # allows manual trigger from GitHub UI
 
 jobs:
