@@ -142,7 +142,7 @@ async function broadSweep() {
   const prompt = `You are checking whether any people from a watchlist have recently died (2025-2026).
 
 INSTRUCTIONS:
-1. Search for broad death indexes: "notable deaths 2025", "notable deaths 2026", "celebrity deaths 2025", "deaths this week". Use at most 4 web searches.
+1. Search for broad death indexes: "recent deaths 2026", "notable deaths 2026", "celebrity deaths 2026", "celebrity deaths this week". Use at most 4 web searches.
 2. Cross-reference the results against the watchlist below.
 3. ONLY include a person if their name (or an obvious variant) appears EXPLICITLY in a death report from a credible source. Do NOT guess. If uncertain, omit them.
 4. Return ONLY a raw JSON array — no markdown, no explanation.
