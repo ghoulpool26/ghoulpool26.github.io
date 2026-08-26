@@ -139,7 +139,7 @@ async function broadSweep() {
 
   const nameList = uniqueNames.filter(n => !knownDeadNames.has(n)).join(', ');
 
-  const prompt = `You are checking whether any people from a watchlist have recently died (2025-2026).
+  const prompt = `You are checking whether any people from a watchlist have recently died.
 
 INSTRUCTIONS:
 1. Search for broad death indexes: "recent celebrity deaths", "celebrity deaths this week", etc. Use at most 5 broad web searches.
